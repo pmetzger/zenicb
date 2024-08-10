@@ -514,71 +514,71 @@ caps preceded with `$' are environment variables):
 
 Finally, if zenicb-server-alist is nil and no other alist is specified,
 connect to `zenicb-server-default' using defaults as described above."
-  (save-excursion
-    (set-buffer buffer)
-    (or alist
-        (setq alist zenicb-server-alist)
-        (setq alist (list (list zenicb-server-default))))
-    (let ((procname (concat "zenicb:" (buffer-name)))
-          ent server port proc)
-      (while alist
-	(setq ent (car alist))
-	(setq alist (cdr alist))
+  (with-current-buffer buffer
+    (save-excursion
+      (or alist
+          (setq alist zenicb-server-alist)
+          (setq alist (list (list zenicb-server-default))))
+      (let ((procname (concat "zenicb:" (buffer-name)))
+            ent server port proc)
+        (while alist
+	  (setq ent (car alist))
+	  (setq alist (cdr alist))
 
-	(setq server (or (car ent)
-			 zenicb-server-default
-			 (error "no server specified.")))
+	  (setq server (or (car ent)
+			   zenicb-server-default
+			   (error "no server specified.")))
 
-	(setq port (or (nth 1 ent)
-		       zenicb-port-default
-		       7326))
+	  (setq port (or (nth 1 ent)
+		         zenicb-port-default
+		         7326))
 
-	(condition-case data
-	    (progn
-	      (zenicb-message buffer 'connect-try server port)
-	      ;; Do a redisplay before connecting, in case the server is
-	      ;; slow to respond.
-	      (sit-for 0)
-	      (setq proc (funcall zenicb-process-connect-function
-				  procname buffer server port))
-	      ;; Update connection status in modeline.
-	      (force-mode-line-update)
-	      (setq alist nil)
-	      (setq zenicb-server          server)
+	  (condition-case data
+	      (progn
+	        (zenicb-message buffer 'connect-try server port)
+	        ;; Do a redisplay before connecting, in case the server is
+	        ;; slow to respond.
+	        (sit-for 0)
+	        (setq proc (funcall zenicb-process-connect-function
+				    procname buffer server port))
+	        ;; Update connection status in modeline.
+	        (force-mode-line-update)
+	        (setq alist nil)
+	        (setq zenicb-server          server)
 
-	      (setq zenicb-port            port)
-              (setq zenicb-nick            (or (nth 2 ent)
-                                               zenicb-nick-default
-                                               (user-login-name)
-                                               "nil")) ; it -is- funny
-	      (setq zenicb-password        (or (nth 3 ent)
-					       zenicb-password-default))
-              (setq zenicb-channel (or (nth 4 ent)
-                                       zenicb-channel-default
-                                       "Meditation"))
-	      (setq zenicb-login-name (or (nth 5 ent)
-                                          zenicb-login-name-default
-                                          (getenv "USER")
-                                          (user-login-name)
-                                          "nil")))
-	  (quit
-	   (setq alist nil)
-	   (zenicb-message buffer 'connect-abort))
+	        (setq zenicb-port            port)
+                (setq zenicb-nick            (or (nth 2 ent)
+                                                 zenicb-nick-default
+                                                 (user-login-name)
+                                                 "nil")) ; it -is- funny
+	        (setq zenicb-password        (or (nth 3 ent)
+					         zenicb-password-default))
+                (setq zenicb-channel (or (nth 4 ent)
+                                         zenicb-channel-default
+                                         "Meditation"))
+	        (setq zenicb-login-name (or (nth 5 ent)
+                                            zenicb-login-name-default
+                                            (getenv "USER")
+                                            (user-login-name)
+                                            "nil")))
+	    (quit
+	     (setq alist nil)
+	     (zenicb-message buffer 'connect-abort))
 
-	  (file-error
-	   ;; file-error "connection failed" "connection timed out" host proc
-	   ;; file-error "connection failed" "connection refused" host proc
-	   (if (string= (nth 1 data) "connection failed")
-	       (zenicb-message buffer 'connect-failed server port
-			       (nth 2 data))
-	     (signal 'file-error data)))
-	  (error
-	   ;; data == (error "Unknown host \"foo\"")
-	   (if (string-match "^Unknown host" (nth 1 data))
-	       (zenicb-message buffer 'connect-failed server port
-			       (nth 1 data))
-	     (apply 'signal data)))))
-      proc)))
+	    (file-error
+	     ;; file-error "connection failed" "connection timed out" host proc
+	     ;; file-error "connection failed" "connection refused" host proc
+	     (if (string= (nth 1 data) "connection failed")
+	         (zenicb-message buffer 'connect-failed server port
+			         (nth 2 data))
+	       (signal 'file-error data)))
+	    (error
+	     ;; data == (error "Unknown host \"foo\"")
+	     (if (string-match "^Unknown host" (nth 1 data))
+	         (zenicb-message buffer 'connect-failed server port
+			         (nth 1 data))
+	       (apply 'signal data)))))
+        proc))))
 
 ;; send nick, user-name, initial-channel, initial-status, and password
 (defun zenicb-login (proc)
@@ -593,10 +593,10 @@ connect to `zenicb-server-default' using defaults as described above."
                                0)))
 
 (defun zenicb-sentinel (proc str)
-  (save-excursion
-    (set-buffer (process-buffer proc))
-    (zenicb-run-hook 'zenicb-exit-hook proc str)
-    (zenicb-message proc 'sentinel (current-time-string))))
+  (with-current-buffer (process-buffer proc)
+    (save-excursion
+      (zenicb-run-hook 'zenicb-exit-hook proc str)
+      (zenicb-message proc 'sentinel (current-time-string)))))
 
 ;; This function takes a chunk of text from the server, and any text
 ;; left over from the last chunk, and passes it to zenicb-parse-output
