@@ -787,18 +787,14 @@ connect to `zenicb-server-default' using defaults as described above."
   (save-match-data
     (if (= (point) zenicb-process-mark) ;(process-mark zenicb-process))
 	(zenicb-send-msg-last-rec)
-      (if (string-match "Xemacs" emacs-version)
-	  (insert last-command-char)
-	(insert (this-command-keys))))))
+      (insert (this-command-keys)))))
 
 (defun zenicb-self-insert-or-send-msg-last-sent ()
   (interactive)
   (save-match-data
     (if (= (point) zenicb-process-mark) ;(process-mark zenicb-process))
 	(zenicb-send-msg-last-sent)
-      (if (string-match "Xemacs" emacs-version)
-	  (insert last-command-char)
-	(insert (this-command-keys))))))
+      (insert (this-command-keys)))))
 
 (defun zenicb-timestamp-string ()
   (substring (current-time-string) 11 16))
