@@ -1407,12 +1407,16 @@ calls of zenicb-timer-hook is how often a server pings the client."
 	 (setq zenicb-current-victim (cdr parsedcmd))
          (zenicb-message proc 'queryon (cdr parsedcmd))))
   (force-mode-line-update))
+
 ;;
 ;; ping a luser.
 ;; /ping victim
 ;;
-(defun zenicb-command-ping (proc parsedcmd)
-  (zenicb-send-string proc (concat "ping\C-a" (cdr parsedcmd))))
+;; Unclear what this was supposed to do; the call to zenicb-send-string
+;; is incorrect because it includes no "type" parameter.
+;(defun zenicb-command-ping (proc parsedcmd)
+;  (zenicb-send-string proc (concat "ping\C-a" (cdr parsedcmd))))
+
 ;;
 ;; quit icb
 ;; /quit
