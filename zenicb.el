@@ -1689,12 +1689,6 @@ assumed to be the same length."
            (funcall fn (car lists))
            (setq lists (cdr lists))))))
 
-;; Set read-passwd.
-(or (fboundp 'read-passwd)
-    (and (not (string-match "XEmacs" emacs-version))
-         (require 'ange-ftp)
-         (fset 'read-passwd 'ange-ftp-read-passwd)))
-
 (defun zenicb-string-match-list (msg regexp-list)
   (let ((match-data (match-data))
         (found nil))
