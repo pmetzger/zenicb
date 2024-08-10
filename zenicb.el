@@ -409,9 +409,9 @@ lisp with an argument of `t'."
                 (zenicb-establish-server-connection zenicb-buffer))
           (error "zenicb: could not establish any server connection."))
 
+      (set-process-coding-system process 'binary 'iso-latin-1)
       (set-process-buffer process zenicb-buffer)
       (set-process-filter process 'zenicb-filter)
-      (set-process-coding-system process 'binary 'iso-latin-1)
       (set-process-sentinel process 'zenicb-sentinel)
       (zenicb-login process)
       (zenicb-run-hook 'zenicb-connect-hook process)))))
@@ -613,7 +613,7 @@ connect to `zenicb-server-default' using defaults as described above."
 ;; zenicb-parse-server-message to be parsed and then whatever needs to be
 ;; done for that server message is done.
 (defun zenicb-parse-output (proc string)
-  (while (let ((length (char-to-int (aref string 0))))
+  (while (let ((length (aref string 0)))
 	   (and (> (length string) length)
 		(let ((type (aref string 1))
 		      (line (substring string 2 length)))
@@ -1694,10 +1694,6 @@ assumed to be the same length."
     (and (not (string-match "XEmacs" emacs-version))
          (require 'ange-ftp)
          (fset 'read-passwd 'ange-ftp-read-passwd)))
-
-;; Set char-to-int -- emacs doesn't have it.
-(or (fboundp 'char-to-int)
-    (defun char-to-int (item) item))
 
 (defun zenicb-string-match-list (msg regexp-list)
   (let ((match-data (match-data))
