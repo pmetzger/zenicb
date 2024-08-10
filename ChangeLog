@@ -1,0 +1,111 @@
+1999-01-06  Faried Nawaz  <fn@hungry.org>
+
+	* zenicb-example.el: Ditto.
+
+	* zenicb.el: Ditto.
+
+	* zenicb-away.el: Change "zenirc" to "zenicb".
+
+1999-01-04  Faried Nawaz  <fn@hungry.org>
+	* zenicb-color.el: added.
+
+	* zenicb-18.el: added a few functions for Emacs 18.
+
+	* zenicb-example.el: updated file.
+
+	* zenicb.el: Added signal code, cleaned up a bit.
+
+1998-12-30  Faried Nawaz  <fn@hungry.org>
+
+	* zenicb-trigger.el, zenicb-8ball.el, zenicb-meditate.el: Switch
+	to using zenicb-random instead of random.  This is for Emacs 18.
+
+	* zenicb.el: Fix zenicb-display-string properly.
+
+	* zenicb-away.el: Catalogify.
+
+	* zenicb-history.el: Fix zenicb-history to use proper process-mark
+ 	variable.
+
+	* zenicb.el: A few minor bugfixes -- misnamed variables, missing
+ 	hooks, etc.  Renamed confirm-zenicb-quit.
+
+	* zenicb-signal.el (process-mark proc) => zenicb-process-mark
+
+	* zenicb-trigger.el: Catalogize.
+
+	* zenicb.el: Make zenicb-display-string strip off the final
+ 	character (usually set to newline in other code) before passing to
+ 	zenicb-message.
+
+	* zenicb.el: Fixed documentation in a few places, reordered
+ 	special variable declarations, placed a (provide 'zenicb) at the
+ 	end of the file.
+
+	* zenicb.el: Remove lots of "legacy" code.  Convert everything
+ 	(except zenicb-server-i) from zenicb-display-string to
+ 	zenicb-message.  Set up Engish catalogs.  Reorder code.
+
+	        TODO: fix zenicb-server-i, test on emacs 18, 19, 20, test on
+ 	        xemacs 19, finish adding timestamp code, add comments and
+ 	        docstrings.
+1998-12-29  Faried Nawaz  <fn@hungry.org>
+
+	* zenicb.el (process-mark zenicb-process) => zenicb-process-mark
+ 	in a few places.
+
+	* zenicb.el [ partially broken; check this in so I don't lose
+ 	it. ]
+
+	Major changes!!!
+
+	zenicb-select added.  Lots of code from ZenIRC stolen.  Connection
+ 	variables changed (for zenicb-select).  zenirc-time-to-int copied.
+  	zenirc-message copied over as zenicb-message with message-catalog
+ 	support.  Need to fix zenicb-send-line to use zenicb-message-hook
+ 	properly.
+	        [needed for Jeremy's code]
+
+	Decisions to make:
+
+	        keep catalogs?  add signals?
+
+1998-07-19  Faried Nawaz  <fn@hungry.com>
+
+	* zenicb.el: updated bug report address.
+
+	* zenicb-example.el: removed zenicb-complete stuff,
+			     fixed read-passwd problem
+
+	* zenicb-8ball.el (zenicb-8ball): fixed a typo.
+
+Wed Jun 10 00:03:06 1998  Faried Nawaz  <fn@terror.hungry.com>
+
+	* zenicb.el: fixed the zenicb-beep braino.
+
+1998-03-27  Faried Nawaz  <fn@mmdt.com>
+
+	* zenicb-history.el: changed C-c C-p/C-n to M-p/M-n
+
+	* zenicb-add.el: added file to repo.
+
+	* zenicb-fortran.el: added file to repo.
+
+	* zenicb-meditate.el: added file to repo.  updated to trigger version.
+
+	* zenicb-8ball.el: added file to repo.
+
+	* zenicb-stamp.el: added file to repo.
+
+	* zenicb-whereis.el: added file to repo.
+
+Sun Nov 23 03:07:52 1997  faried nawaz  <fn@LISP-READER.Hungry.COM>
+
+	* zenicb.el: added most of my changes.  added mrg's /news.
+	             added /alert, (zenicb-bug), (confirm-zenicb-quit)
+
+	* zenicb.el: added mrg's zenicb-beep.
+
+Sat Nov 22 18:07:52 1997  faried nawaz  <fn@LISP-READER.Hungry.COM>
+
+	* zenicb-make.el: basically copied over from zenirc's zenirc-make.el
