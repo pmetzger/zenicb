@@ -1,5 +1,5 @@
 ;;;
-;;; zenicb-nologout.el --- Continuously Waste time on International 
+;;; zenicb-nologout.el --- Continuously Waste time on International
 ;;;                        Citizen's Band (ZenICB client)
 
 ;;; Copyright (C) 1994 Ben A. Mesander

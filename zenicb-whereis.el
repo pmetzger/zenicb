@@ -80,12 +80,12 @@
 
 (defun zenicb-server-i (proc parsedmsg)
   (let ((reply-type (nth 0 parsedmsg)))
-    (cond 
+    (cond
      ((string= reply-type "wh") ; who reply header
       (zenicb-display-string
        proc (format "[info]  Nickname     Idle  Sign-On       Account\n")))
      ((string= reply-type "wl") ; who reply
-      (zenicb-display-string 
+      (zenicb-display-string
        proc (format "[info] %s%-12s%5s  %s  %s@%s %s\n"
 		    (if (string= (nth 1 parsedmsg) "m") "*" " ")
 		    (nth 2 parsedmsg)

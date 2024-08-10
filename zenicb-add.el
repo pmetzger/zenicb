@@ -35,7 +35,7 @@
 ;;; (setq zenicb-mode-hook '(lambda ()
 ;;; 				  (load "zenicb-add")
 ;;; 				  (setq zenicb-mode-hook nil)))
-;;; 
+;;;
 
 ;;; Currently, I use it to display timestamps in public/private messages
 ;;; that I receive.  I must write a generic timestamp interface one of
@@ -48,7 +48,7 @@
       (ding t))
   (zenicb-display-string proc (format "%s <%s> %s\n"
 				      (substring (current-time-string) 11 16)
-				      (nth 0 parsedmsg) 
+				      (nth 0 parsedmsg)
 				      (nth 1 parsedmsg))))
 
 (defun zenicb-server-c (proc parsedmsg)
@@ -58,7 +58,7 @@
       (ding t))
   (zenicb-display-string proc (format "%s *%s* %s\n"
 				      (substring (current-time-string) 11 16)
-				      (nth 0 parsedmsg) 
+				      (nth 0 parsedmsg)
 				      (nth 1 parsedmsg))))
 
 ;;; end.
