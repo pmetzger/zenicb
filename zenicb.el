@@ -383,6 +383,7 @@ lisp with an argument of `t'."
                          (get-buffer-create zenicb-buffer-name)))
          (process (get-buffer-process zenicb-buffer)))
     (pop-to-buffer zenicb-buffer)
+    (set-buffer-multibyte nil)
 
     (cond
      ((and process
@@ -413,6 +414,7 @@ lisp with an argument of `t'."
 
       (set-process-buffer process zenicb-buffer)
       (set-process-filter process 'zenicb-filter)
+      (set-process-coding-system process 'binary 'iso-latin-1)
       (set-process-sentinel process 'zenicb-sentinel)
       (zenicb-login process)
       (zenicb-run-hook 'zenicb-connect-hook process)))))
