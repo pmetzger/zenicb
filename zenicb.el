@@ -658,9 +658,7 @@ connect to `zenicb-server-default' using defaults as described above."
 ;;; Send data to the ICB server
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun zenicb-send-string (proc type str)
-  ;; The use of (concat) is to work around a bug in Emacs 18 that would
-  ;; cause the NUL to be lost if it were in the (format) pattern.
-  (let ((message (concat (format "%c%c%s" (+ 2 (length str)) type str) "\0")))
+  (let ((message (format "%c%c%s\0" (+ 2 (length str)) type str)))
 ;    (zenicb-message proc 'debug (concat "Message: "
 ;                                        (prin1-to-string message)))
     (process-send-string proc message)))
