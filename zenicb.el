@@ -54,9 +54,6 @@
 ;; Current version of ZenICB
 (defconst zenicb-version "$Revision: 1.31 $")
 
-(and (string= (substring emacs-version 0 2) "18")
-     (require 'zenicb-18))
-
 
 ;; User options
 
