@@ -1069,23 +1069,26 @@ the second argument to be earlier in time than the first argument."
 	(t (list (- (nth 0 a) (nth 0 b))
 		 (- (nth 1 a) (nth 1 b))))))
 
+(defun zenicb-secs-since-epoch ()
+  (time-convert (current-time) 'integer))
+
 ;; Convert a number of seconds since the epoch (in ASCII) into an
 ;; ASCII string representing the time.
+;; Times within the last year are given as MMM DD HH:MM
+;; Times past a year are given as MMM DDD YYYY
+;; The epoch is given as "-"
 ;;
 (defun zenicb-convert-date (seconds)
-  (let (millions units high low)
-    (if (string-match "\\(......\\)$" seconds)
-        (setq millions (string-to-number (substring seconds 0 (match-beginning 1)))
-              units (string-to-number (substring seconds (match-beginning 1))))
-      (setq millions 0
-            units (string-to-number seconds)))
-    (setq high (+ (* millions 15) (/ (* millions 265) 1024) (/ units 65536))
-          low (+ (% (+ (* (% millions 4) 16384) (* millions 576)) 65536)
-                 (% units 65536)))
-    (if (> low 65535)
-        (setq low (- low 65536)
-              high (1+ high)))
-    (substring (current-time-string (cons high low)) 4 16)))
+  (let ((seconds (string-to-number seconds))
+        (ysecs 31536000) ; seconds in a year
+        (ctime (zenicb-secs-since-epoch)))
+    (cond ((= seconds 0)
+           "           -")
+          ((< seconds (- ctime ysecs))
+           (format-time-string "%b %e %Y " seconds))
+          (t
+           (format-time-string "%b %e %H:%M" seconds)))))
+
 
 (defun zenicb-timer-handler (proc)
   "Call zenicb-timer-hook as often as possible. The maximum delay between
