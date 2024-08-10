@@ -479,7 +479,7 @@ function is issued."
       (read-passwd "Enter password (default is unset): ")))
 
     ; update zenicb-server-alist
-    (let ((new-list (list new-server (string-to-int new-port) new-nick new-passwd new-channel)))
+    (let ((new-list (list new-server (string-to-number new-port) new-nick new-passwd new-channel)))
       (if (not (member new-list zenicb-server-alist))
 	  ; a new entry is given
 	  (setq zenicb-server-alist
@@ -1002,11 +1002,11 @@ Written by Stephen Ma <ma_s@maths.su.oz.au>"
 		  (let ((prodh (* num1 (car num2)))
 			(prodl (* num1 (car (cdr num2)))))
 		    (list (+ prodh (/ prodl 65536)) (% prodl 65536)))))
-	 (seconds (string-to-int (substring timestr 17 19)))
-	 (minutes (string-to-int (substring timestr 14 16)))
-	 (hours (string-to-int (substring timestr 11 13)))
-	 (partdays (1- (string-to-int (substring timestr 8 10))))
-	 (years (string-to-int (substring timestr 20 24)))
+	 (seconds (string-to-number (substring timestr 17 19)))
+	 (minutes (string-to-number (substring timestr 14 16)))
+	 (hours (string-to-number (substring timestr 11 13)))
+	 (partdays (1- (string-to-number (substring timestr 8 10))))
+	 (years (string-to-number (substring timestr 20 24)))
 	 (days (+ partdays
 		  (cond ((and (= (% years 4) 0)
 			      (/= (% years 100) 0))
@@ -1079,10 +1079,10 @@ the second argument to be earlier in time than the first argument."
 (defun zenicb-convert-date (seconds)
   (let (millions units high low)
     (if (string-match "\\(......\\)$" seconds)
-        (setq millions (string-to-int (substring seconds 0 (match-beginning 1)))
-              units (string-to-int (substring seconds (match-beginning 1))))
+        (setq millions (string-to-number (substring seconds 0 (match-beginning 1)))
+              units (string-to-number (substring seconds (match-beginning 1))))
       (setq millions 0
-            units (string-to-int seconds)))
+            units (string-to-number seconds)))
     (setq high (+ (* millions 15) (/ (* millions 265) 1024) (/ units 65536))
           low (+ (% (+ (* (% millions 4) 16384) (* millions 576)) 65536)
                  (% units 65536)))
@@ -1111,7 +1111,7 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;; Display the idle time in a nice format.
 ;;
 (defun zenicb-convert-time (seconds)
-  (let ((units (string-to-int seconds)))
+  (let ((units (string-to-number seconds)))
     (cond
      ((< units 90) "-")
      (t (format "%dm" (/ (+ units 30) 60))))))

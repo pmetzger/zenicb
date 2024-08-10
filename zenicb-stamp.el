@@ -45,14 +45,14 @@
   (save-match-data
     (let (millions units high low)
       (if (string-match "^\\(.*\\)\\(......\\)$" seconds)
-          (setq millions (string-to-int (substring seconds
+          (setq millions (string-to-number (substring seconds
                                                    (match-beginning 1)
                                                    (match-end 1)))
-                units (string-to-int (substring seconds
+                units (string-to-number (substring seconds
                                                 (match-beginning 2)
                                                 (match-end 2))))
         (setq millions 0
-              units (string-to-int seconds)))
+              units (string-to-number seconds)))
       (setq high (+ (* millions 15) (/ (* millions 265) 1024) (/ units 65536))
             low (+ (% (+ (* (% millions 4) 16384) (* millions 576)) 65536)
                    (% units 65536)))
