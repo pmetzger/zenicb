@@ -68,7 +68,7 @@
 
 (defvar zenicb-beep-on-signal nil
   "*If t, beep on signals when not seen.
-If 'always, beep on all signals.")
+If \\='always, beep on all signals.")
 
 (defvar zenicb-timestamp nil
   "*If nil, don't timestamp messages.
