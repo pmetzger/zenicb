@@ -732,6 +732,7 @@ connect to `zenicb-server-default' using defaults as described above."
 		     (zenicb-split-string (substring string 0 -1) "\n")))))))
       ;; if the user presses enter, jump to the bottom of the buffer
       (goto-char (point-max)))))
+
 (defun zenicb-send-public (message proc)
   (zenicb-send-string proc ?b message))
 
@@ -879,6 +880,7 @@ connect to `zenicb-server-default' using defaults as described above."
               (and window-point
                    (set-window-start window window-point 'noforce)))
           (set-buffer orig-buffer)))))))
+
 (defun zenicb-display-string (proc string)
   (let ((len (- (length string) 1)))
     (if (char-equal (aref string len) ?\n)
@@ -1104,6 +1106,7 @@ calls of zenicb-timer-hook is how often a server pings the client."
     (cond
      ((< units 90) "-")
      (t (format "%dm" (/ (+ units 30) 60))))))
+
 ;;
 ;; Split MESSAGE into MAXLENGTH sized chunks, and call FUNCTION with each
 ;; piece, plus the additional ARGS.
@@ -1130,6 +1133,7 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun zenicb-server-a (proc parsedmsg)
   (zenicb-message proc 'loginok))
+
 ;;
 ;; b - public message
 ;;
@@ -1142,6 +1146,7 @@ calls of zenicb-timer-hook is how often a server pings the client."
                               zenicb-timestamp-suffix)
                     (nth 0 parsedmsg))
                   (nth 1 parsedmsg)))
+
 ;;
 ;; c - private message
 ;;
@@ -1155,21 +1160,25 @@ calls of zenicb-timer-hook is how often a server pings the client."
                               zenicb-timestamp-suffix)
                     (nth 0 parsedmsg))
                   (nth 1 parsedmsg)))
+
 ;;
 ;; d - status message
 ;;
 (defun zenicb-server-d (proc parsedmsg)
   (zenicb-message proc 'status (nth 0 parsedmsg) (nth 1 parsedmsg)))
+
 ;;
 ;; e - error packet
 ;;
 (defun zenicb-server-e (proc parsedmsg)
   (zenicb-message proc 'errormsg (nth 0 parsedmsg)))
+
 ;;
 ;; g - signoff
 ;;
 (defun zenicb-server-g (proc parsedmsg)
   (zenicb-message proc 'goaway))
+
 ;;
 ;; i - command output
 ;;
@@ -1204,6 +1213,7 @@ calls of zenicb-timer-hook is how often a server pings the client."
 		    (prin1-to-string reply-type)
 		    (prin1-to-string parsedmsg)))))))
 (fset 'zenicb-server-h 'zenicb-server-i)
+
 ;;
 ;; j - protocol message
 ;;
@@ -1212,11 +1222,13 @@ calls of zenicb-timer-hook is how often a server pings the client."
                   (nth 1 parsedmsg)
                   (nth 2 parsedmsg)
                   (nth 0 parsedmsg)))
+
 ;;
 ;; k - beep
 ;;
 (defun zenicb-server-k (proc parsedmsg)
   (zenicb-message proc 'beep (nth 0 parsedmsg)))
+
 ;;
 ;; l - ping
 ;;
@@ -1233,29 +1245,34 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Command hooks
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;
 ;; display byte count, time connected, etc.
 ;; /bcount [victim]
 ;;
 ;(defun zenicb-command-bcount (proc parsedcmd)
 ;  (zenicb-send-string proc ?h (concat "m\C-aserver bcount " (cdr parsedcmd))))
+
 ;;
 ;; Reach out and beep someone
 ;;
 (defun zenicb-command-beep (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "beep\C-a" (cdr parsedcmd))))
+
 ;;
 ;; Boot someone out of a group
 ;; /boot victim
 ;;
 (defun zenicb-command-boot (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "boot\C-a" (cdr parsedcmd))))
+
 ;;
 ;; Cancel an invitation
 ;; /cancel victim
 ;;
 (defun zenicb-command-cancel (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "cancel\C-a" (cdr parsedcmd))))
+
 ;;
 ;; Change the command character dynamically.
 ;; /command-char command-char
@@ -1264,18 +1281,21 @@ calls of zenicb-timer-hook is how often a server pings the client."
 (defun zenicb-command-command-char (proc parsedcmd)
   (if (not (string= "" (cdr parsedcmd)))
 	   (setq zenicb-command-char (string-to-char (cdr parsedcmd)))))
+
 ;;
 ;; Delete a nickname from the server's database.
 ;; /delete password
 ;;
 (defun zenicb-command-delete (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "delete\C-a" (cdr parsedcmd))))
+
 ;;
 ;; Drop connection
 ;; /drop nick passwd
 ;;
 (defun zenicb-command-drop (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "drop\C-a" (cdr parsedcmd))))
+
 ;;
 ;; Change echoback status
 ;; /echo [on|off|verbose]
@@ -1283,12 +1303,14 @@ calls of zenicb-timer-hook is how often a server pings the client."
 (defun zenicb-command-echo (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "echoback\C-a" (cdr parsedcmd))))
 (fset 'zenicb-command-echoback 'zenicb-command-echo)
+
 ;;
 ;; Exclude someone from getting a public message
 ;; /exclude nick message
 ;;
 (defun zenicb-command-exclude (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "exclude\C-a" (cdr parsedcmd))))
+
 ;;
 ;; change current group
 ;; /group groupname (or /g, or /join)
@@ -1297,6 +1319,7 @@ calls of zenicb-timer-hook is how often a server pings the client."
   (zenicb-send-string proc ?h (concat "g\C-a" (cdr parsedcmd))))
 (fset 'zenicb-command-g 'zenicb-command-group)
 (fset 'zenicb-command-join 'zenicb-command-group) ; for the irc-impaired
+
 ;;
 ;; get help
 ;; /help
@@ -1304,6 +1327,7 @@ calls of zenicb-timer-hook is how often a server pings the client."
 (defun zenicb-command-help (proc parsedcmd)
   (zenicb-send-string proc ?h "m\C-aserver help")
   (zenicb-send-string proc ?h "m\C-aserver ?"))
+
 ;;
 ;; Reach out and hush someone
 ;; /hush [-n] [-qop] user
@@ -1315,12 +1339,14 @@ calls of zenicb-timer-hook is how often a server pings the client."
 (defun zenicb-command-hush (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "hush\C-a" (cdr parsedcmd))))
 (fset 'zenicb-command-shush 'zenicb-command-hush) ; is this legal?
+
 ;;
 ;; invite a victim, or show who is invited
 ;; /invite [victim]
 ;;
 (defun zenicb-command-invite (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "invite\C-a" (cdr parsedcmd))))
+
 ;;
 ;; Set the message catalog.
 ;; /language languagename
@@ -1328,6 +1354,7 @@ calls of zenicb-timer-hook is how often a server pings the client."
 (defun zenicb-command-language (proc parsedcmd)
   (let ((lang (car (zenicb-parse-firstword (cdr parsedcmd)))))
     (zenicb-lang-set-current-language lang)))
+
 ;;
 ;; private message
 ;; /m victim message or /msg victim message
@@ -1337,22 +1364,27 @@ calls of zenicb-timer-hook is how often a server pings the client."
 	 (victim (car tmp))
 	 (message (cdr tmp)))
     (zenicb-split message 220 'zenicb-send-private proc victim)))
+
 (defun zenicb-send-private (message proc victim)
   (setq zenicb-msg-last-sent victim)
   (zenicb-send-string proc ?h (concat "m\C-a" victim " " message)))
+
 ;; compatability for irc refugees
 (fset 'zenicb-command-msg 'zenicb-command-m)
+
 ;;
 ;; Read some weird messages (I have no idea what this is)
 ;;
 ;(defun zenicb-command-mess (proc parsecmd)
 ;  (zenicb-send-string proc ?h "m\C-aserver mess"))
+
 ;;
 ;; Read the message-of-the-day
 ;; /motd
 ;;
 (defun zenicb-command-motd (proc parsedcmd)
   (zenicb-send-string proc ?h "motd\C-a"))
+
 ;;
 ;; Notify on a login/logout
 ;; /notify [-q] [-n nick] [-s site]
@@ -1360,12 +1392,14 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;;
 (defun zenicb-command-notify (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "notify\C-a" (cdr parsedcmd))))
+
 ;;
 ;; Show a particular news message
 ;; /news item
 ;;
 (defun zenicb-command-news (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "news\C-a" (cdr parsedcmd))))
+
 ;;
 ;; Change nicknames
 ;; /nick newnick
@@ -1377,6 +1411,7 @@ calls of zenicb-timer-hook is how often a server pings the client."
   ;; between icb servers on the messages returned.
   (setq zenicb-nick (cdr parsedcmd))
   (zenicb-send-string proc ?h (concat "name\C-a" (cdr parsedcmd))))
+
 ;;
 ;; Make the server stop beeping you
 ;; /nobeep [off|on|verbose]
@@ -1384,17 +1419,20 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;;
 (defun zenicb-command-nobeep (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "nobeep\C-a" (cdr parsedcmd))))
+
 ;; Set autoregister
 ;; /nosecure
 ;;
 (defun zenicb-command-nosecure (proc parsedcmd)
   (zenicb-send-string proc ?h "m\C-aserver nosecure"))
+
 ;;
 ;; Pass moderator status
 ;; /pass newmoderator
 ;;
 (defun zenicb-command-pass (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "pass\C-a" (cdr parsedcmd))))
+
 ;;
 ;; send messages to another user w/o typing /m user
 ;; /query user  (or just /query to stop)
@@ -1412,8 +1450,9 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;; ping a luser.
 ;; /ping victim
 ;;
-;; Unclear what this was supposed to do; the call to zenicb-send-string
-;; is incorrect because it includes no "type" parameter.
+;; (Unclear what this was supposed to do; the call to zenicb-send-string
+;; is incorrect because it includes no "type" parameter. Comment out for now.)
+;;
 ;(defun zenicb-command-ping (proc parsedcmd)
 ;  (zenicb-send-string proc (concat "ping\C-a" (cdr parsedcmd))))
 
@@ -1428,15 +1467,18 @@ calls of zenicb-timer-hook is how often a server pings the client."
       (progn
         (zenicb-message proc 'quit)
 	(delete-process proc))))
+
 (defun zenicb-confirm-quit ()
   (interactive)
   (yes-or-no-p "Do you really want to quit? "))
+
 ;;
 ;; Read stored message
 ;; /read
 ;;
 (defun zenicb-command-read (proc parsedcmd)
   (zenicb-send-string proc ?h "m\C-aserver read"))
+
 ;;
 ;; Register a nick
 ;; /reg[ister]
@@ -1444,25 +1486,31 @@ calls of zenicb-timer-hook is how often a server pings the client."
 (defun zenicb-command-register (proc parsedcmd)
   (let ((passwd (read-passwd "Enter password: ")))
     (zenicb-send-string proc ?h (concat "m\C-aserver p " passwd))))
+
 (fset 'zenicb-command-reg 'zenicb-command-register)
+
 ;;
 ;; "secure" nick registration
 ;;
 (defun zenicb-command-secure (proc parsedcmd)
   (zenicb-send-string proc ?h "m\C-aserver secure"))
+
 ;;
 ;; Display time to shutdown
 ;; /shuttime
 ;;
 (defun zenicb-command-shuttime (proc parsedcmd)
   (zenicb-send-string proc ?h "M\C-aserver shuttime"))
+
 ;;
 ;; Change/view channel status
 ;; /status [mode]
 ;;
 (defun zenicb-command-status (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "status\C-a" (cdr parsedcmd))))
+
 (fset 'zenicb-command-mode 'zenicb-command-status)
+
 ;;
 ;; Select who can talk in a controlled group.
 ;; /talk [-qard] nickname
@@ -1471,31 +1519,37 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;;
 (defun zenicb-command-talk (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "talk\C-a" (cdr parsedcmd))))
+
 ;;
 ;; set the topic for a group
 ;; /topic new-topic-string
 ;;
 (defun zenicb-command-topic (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "topic\C-a" (cdr parsedcmd))))
+
 ;;
 ;; check version of icb
 ;; /version
 ;;
 (defun zenicb-command-version (proc parsedcmd)
   (zenicb-send-string proc ?h "v\C-a"))
+
 ;;
 ;; Show username and hostname info for a user
 ;; /whereis user
 ;;
 (defun zenicb-command-whereis (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "whereis\C-a" (cdr parsedcmd))))
+
 ;;
 ;; See who's on ICB
 ;; /who [groupname] (groupname of . means current group)
 ;;
 (defun zenicb-command-who (proc parsedcmd)
   (zenicb-send-string proc ?h (concat "w\C-a" (cdr parsedcmd))))
+
 (fset 'zenicb-command-w 'zenicb-command-who)
+
 ;;
 ;; Get info about a user
 ;; /whois victim
@@ -1503,6 +1557,7 @@ calls of zenicb-timer-hook is how often a server pings the client."
 (defun zenicb-command-whois (proc parsedcmd)
   (zenicb-send-string
    proc ?h (concat "m\C-aserver whois " (cdr parsedcmd))))
+
 ;;
 ;; Save a message for a victim
 ;; /write victim message
