@@ -1085,10 +1085,6 @@ the second argument to be earlier in time than the first argument."
         (setq low (- low 65536)
               high (1+ high)))
     (substring (current-time-string (cons high low)) 4 16)))
-(if (string< emacs-version "19")
-    ;; Emacs 18's (current-time-string) doesn't take an argument.
-    (defun zenicb-convert-date (seconds)
-      (format "%-12s" seconds)))
 
 (defun zenicb-timer-handler (proc)
   "Call zenicb-timer-hook as often as possible. The maximum delay between
