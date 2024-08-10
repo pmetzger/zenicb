@@ -82,13 +82,8 @@ and thus have no category symbol.")
 
 ;; Check whether a given color really exists as a color.
 (defun zenicb-color-name-p (color)
-  (let ((version (emacs-version)))
-    (cond ((string-match "XEmacs" version)
-	   (valid-color-name-p color))
-	  ((string-match "GNU" version)
-	   (x-color-defined-p color))
-	  (t
-	   nil))))
+  (x-color-defined-p color))
+
 
 (defun zenicb-color-mode (&optional prefix)
   "Enable or disable colorization of icb messages.
@@ -106,7 +101,7 @@ variable of the same name."
     (setq zenicb-color-mode t))
    (t
     (setq zenicb-color-mode nil)))
-  (cond ((not (interactive-p)))
+  (cond ((not (called-interactively-p t)))
         (zenicb-color-mode
          (message "zenicb-color-mode is enabled"))
         (t
