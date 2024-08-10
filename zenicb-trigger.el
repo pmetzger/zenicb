@@ -314,12 +314,5 @@ deactivating the trigger via /trigger subcommands."
 (defun zenicb-random (n)
   (and (numberp n)
        (random n)))
-(cond ((string< emacs-version "19")
-       (or (fboundp 'abs)
-           (require 'cl))
-    ;; Emacs 18's (current-time-string) doesn't take an argument.
-       (defun zenicb-random (n)
-         (% (abs (random)) n))))
-
 
 ;;; zenicb-trigger.el ends here
