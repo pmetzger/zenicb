@@ -1,4 +1,6 @@
-2024-08-10  Perry E. Metzger
+2024-08-10  Perry E. Metzger <why@do.you.care>
+
+	* zenicb.el: update version to 1.32 (2024-08-10)
 
 	* Throughout: Re-indented, cleaned whitespace, etc.
 
