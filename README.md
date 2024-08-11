@@ -22,7 +22,7 @@ Just in case you're morbidly curious, you can read [the Wikipedia entry](https:/
 
 True masochists can read [a summary of the
 protocol](http://www.icb.net/_jrudd/icb/protocol.html), a lightly
-cleaned up copy of which is in the `doc/` directory.
+cleaned up copy of which is in `doc/protocol.html`.
 
 ## How do I use this?
 
