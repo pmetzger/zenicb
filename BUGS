@@ -1,0 +1,3 @@
+current known bugs:
+	zenicb-trigger has deadwood + doesn't handle private messages.
+	doc/ directory doesn't exist.
