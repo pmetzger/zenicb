@@ -52,7 +52,7 @@
 ;;; Code:
 
 ;; Current version of ZenICB
-(defconst zenicb-version "$Revision: 1.31 $")
+(defconst zenicb-version "Version: 1.32 (2024-08-10)")
 
 
 ;; User options
