@@ -40,35 +40,11 @@
 
 (require 'zenicb)
 
+(defvar zenicb-timestamp-interval 600
+  "How often to insert timestamps into the ZenICB buffer, in seconds.
+The default is 600 seconds, or 10 minutes.")
 
-(defun zenicb-epoch-seconds-to-time (seconds)
-  (save-match-data
-    (let (millions units high low)
-      (if (string-match "^\\(.*\\)\\(......\\)$" seconds)
-          (setq millions (string-to-number (substring seconds
-                                                   (match-beginning 1)
-                                                   (match-end 1)))
-                units (string-to-number (substring seconds
-                                                (match-beginning 2)
-                                                (match-end 2))))
-        (setq millions 0
-              units (string-to-number seconds)))
-      (setq high (+ (* millions 15) (/ (* millions 265) 1024) (/ units 65536))
-            low (+ (% (+ (* (% millions 4) 16384) (* millions 576)) 65536)
-                   (% units 65536)))
-      (if (> low 65535)
-          (setq low (- low 65536)
-                high (1+ high)))
-      (list high low))))
-
-
-(defvar zenicb-timestamp-interval '(0 600)
-  "How often to insert timestamps into the ZenICB buffer. The default
-is 600 seconds or 10 minutes. The value of this variable is a 32 bit
-integer, expressed as a list of two 16 bit values, ie, the default
-value of 600 seconds is expressed as (0 600).")
-
-(defvar zenicb-last-timestamp '(0 0)
+(defvar zenicb-last-timestamp 0
   "The time the last timestamp was inserted into the ZenICB buffer.
 You shouldn't have to frob this yourself.")
 
@@ -82,6 +58,5 @@ process PROC every zenicb-timestamp-interval seconds."
         (setq zenicb-last-timestamp now))))
 
 (zenicb-add-hook 'zenicb-timer-hook 'zenicb-timestamp)
-(setq zenicb-time-last-event (zenicb-time-to-int (current-time-string)))
 
 (provide 'zenicb-stamp)

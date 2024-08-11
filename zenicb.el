@@ -214,7 +214,7 @@ This function can be used to make proxy connections.")
 (defvar zenicb-unprocessed-output nil)
 (make-variable-buffer-local 'zenicb-unprocessed-output)
 
-(defvar zenicb-time-last-event '(0 0))
+(defvar zenicb-time-last-event '0)
 (make-variable-buffer-local 'zenicb-time-last-event)
 
 ;; server version (set in login packet)
@@ -394,7 +394,7 @@ lisp with an argument of `t'."
 
       ;; Time of last event in ZenICB -- set it to "now".
       (setq zenicb-time-last-event
-            (zenicb-time-to-int (current-time-string)))
+            (zenicb-secs-since-epoch))
 
       ;; note the semantics here that the current buffer when
       ;; zenicb-startup-hook is run is zenicb-buffer.
@@ -794,7 +794,8 @@ connect to `zenicb-server-default' using defaults as described above."
       (insert (this-command-keys)))))
 
 (defun zenicb-timestamp-string ()
-  (substring (current-time-string) 11 16))
+  "Returns HH:MM string corresponding to current time."
+  (format-time-string "%H:%M" (zenicb-secs-since-epoch)))
 
 
 
@@ -980,97 +981,22 @@ list of hooks to run in HOOK, then nothing is done.  See `zenicb-add-hook'."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ZenICB time handling functions
 ;;;
-;;; These functions are used to implement time handling in ZenICB.
-;;; Much of this code was lifted from the ZenIRC irc client, which,
-;;; in turn, got them from Kiwi 4.30 irc client.
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun zenicb-time-to-int (timestr)
-  "Convert from time in string format as returned by current-time-string
-to a double integer format, as returned by file-attributes.
-
-Written by Stephen Ma <ma_s@maths.su.oz.au>"
-  (let* ((norm+ '(lambda (num1 num2)
-		  (let ((sumh (+ (car num1) (car num2)))
-			(suml (+ (car (cdr num1)) (car (cdr num2)))))
-		    (list (+ sumh (/ suml 65536)) (% suml 65536)))))
-	 (norm* '(lambda (num1 num2)
-		  (let ((prodh (* num1 (car num2)))
-			(prodl (* num1 (car (cdr num2)))))
-		    (list (+ prodh (/ prodl 65536)) (% prodl 65536)))))
-	 (seconds (string-to-number (substring timestr 17 19)))
-	 (minutes (string-to-number (substring timestr 14 16)))
-	 (hours (string-to-number (substring timestr 11 13)))
-	 (partdays (1- (string-to-number (substring timestr 8 10))))
-	 (years (string-to-number (substring timestr 20 24)))
-	 (days (+ partdays
-		  (cond ((and (= (% years 4) 0)
-			      (/= (% years 100) 0))
-			 (cdr (assoc (substring timestr 4 7)
-				     '(("Jan" . 0)
-				       ("Feb" . 31)
-				       ("Mar" . 60)
-				       ("Apr" . 91)
-				       ("May" . 121)
-				       ("Jun" . 152)
-				       ("Jul" . 182)
-				       ("Aug" . 213)
-				       ("Sep" . 244)
-				       ("Oct" . 274)
-				       ("Nov" . 305)
-				       ("Dec" . 335)))))
-			(t (cdr (assoc (substring timestr 4 7)
-				       '(("Jan" . 0)
-					 ("Feb" . 31)
-					 ("Mar" . 59)
-					 ("Apr" . 90)
-					 ("May" . 120)
-					 ("Jun" . 151)
-					 ("Jul" . 181)
-					 ("Aug" . 212)
-					 ("Sep" . 243)
-					 ("Oct" . 273)
-					 ("Nov" . 304)
-					 ("Dec" . 334))))))
-		  (* (- years 1970) 365)
-		  (/ (- years 1969) 4)
-		  (- (/ (- years 1901) 100)))))
-    (funcall norm+
-	     (funcall norm*
-		      60
-		      (funcall norm+
-			       (funcall norm*
-					60
-					(funcall norm+
-						 (funcall norm*
-							  24
-							  (list 0 days))
-						 (list 0 hours)))
-			       (list 0 minutes)))
-	     (list 0 seconds))))
+(defun zenicb-secs-since-epoch ()
+  "Returns the number of seconds since midnight, Jan 1, 1970."
+  (time-convert (current-time) 'integer))
 
 (defun zenicb-time= (a b)
   "Compare two times, and return true if they are equal."
-  (and (= (nth 0 a) (nth 0 b))
-       (= (nth 1 a) (nth 1 b))))
+  (= a b))
 
 (defun zenicb-time< (a b)
   "Compare two times, and return t if the first is earlier than the second."
-  (or (< (nth 0 a) (nth 0 b))
-      (and (= (nth 0 a) (nth 0 b))
-	   (< (nth 1 a) (nth 1 b)))))
+  (< a b))
 
 (defun zenicb-time-diff (a b)
   "Return the difference between two times. This function requires
 the second argument to be earlier in time than the first argument."
-  (cond ((= (nth 0 a) (nth 0 b)) (list 0 (- (nth 1 a) (nth 1  b))))
-	((> (nth 1 b) (nth 1 a)) (list (- (nth 0 a) (nth 0 b) 1)
-				       (- (+ 65536 (nth 1 a)) (nth 1 b))))
-	(t (list (- (nth 0 a) (nth 0 b))
-		 (- (nth 1 a) (nth 1 b))))))
-
-(defun zenicb-secs-since-epoch ()
-  (time-convert (current-time) 'integer))
+  (- a b))
 
 ;; Convert a number of seconds since the epoch (in ASCII) into an
 ;; ASCII string representing the time.
@@ -1093,8 +1019,8 @@ the second argument to be earlier in time than the first argument."
 (defun zenicb-timer-handler (proc)
   "Call zenicb-timer-hook as often as possible. The maximum delay between
 calls of zenicb-timer-hook is how often a server pings the client."
-  (let ((now (zenicb-time-to-int (current-time-string))))
-    (if (zenicb-time< '(0 0) (zenicb-time-diff now zenicb-time-last-event))
+  (let ((now (zenicb-secs-since-epoch)))
+    (if (zenicb-time< 0 (zenicb-time-diff now zenicb-time-last-event))
 	(progn
 	  (and zenicb-debug-timer
                (zenicb-message proc 'debug
