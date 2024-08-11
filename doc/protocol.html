@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>
+ICB Protocol
+</h1>
+
+<font SIZE=2>
+Last Modified:
+Sat Aug 4 01:19:36 PDT 2001
+by <A HREF="mailto:falcon@icb.net">falcon@icb.net</A>
+</font>
+
+<h2>
+Basic Packet Layout:
+</h2>
+
+<p>
+The basic unit ICB clients and server communicate with is a packet with the
+following layout:
+</p>
+
+<pre>LTd</pre>
+
+<p>
+"L" is the length of the packet in bytes.  "L" is a single byte,
+thus the packet length is limited to 0 to 255 bytes.  It does not
+include the L byte, but does include the Packet Type byte. The protocol
+(and the chime server) does not require the data in the packet to be
+null-terminated, but some older (poorly implemented) clients and servers
+do. If you *do* send the null, you must include it in your length byte.
+<br>
+
+<i>Proposed extension: if L is 0, the packet is part of an extended packet.
+The packet should be treated as if L was 255 and the next packet received
+from the sender should be appended to this packet.</i>
+</p>
+
+<p>
+"T" is the ICB type that the packet is to classified as. It is a
+single byte. See "ICB Packet Types" for the list of possible types.
+</p>
+
+<p>
+"d" is the data contained in the packet. It can contain any valid ASCII data,
+and can be up to 253 bytes in length if you null-terminate (as recommended
+above), or 254 bytes in length if not.
+</p>
+
+<h2>
+ICB Packet Types
+</h2>
+
+<p>
+The data in a packet is often seperated into what I will call <I>fields</I>.
+The fields are data separated by ASCII ^A (\001). If a field is optional,
+it (and any fields after it) can merely be left out of the packet.
+</p>
+
+<h3>'a' : Login packet</h3>
+<h4>Client to Server</h4>
+<ul>
+<li>Packet Type: 'a' (Login)
+<li>Fields: Minimum: 5, Maximum: 7
+<ul>
+<li>Field 0: Login id of user. Required.
+<li>Field 1: Nickname to use upon login into ICB. Required.
+<li>Field 2: Default group to log into in ICB, or do group who of. A null
+string for who listing will show all groups. Required.
+<li>Field 3: Login command. Required. Currently one of the following:
+<ul>
+<li>"login" log into ICB
+<li>"w" just show who is currently logged into ICB
+</ul>
+<li>Field 4: Password to authenticate the user to ICB. Required, but often
+blank.
+<li>Field 5: If when logging in, default group (field 2) does not exist,
+create it with this status. Optional.
+<li>Field 6: Protocol level. Optional. Deprecated.
+</ul>
+</ul>
+<p>Thus the ICB Login Packet has the following layout:</p>
+<pre>aLoginid^ANickname^ADefaultGroup^ACommand^APassword^AGroupStatus^AProtocolLevel</pre>
+<h4>Server to Client</h4>
+<ul>
+<li>Packet Type: 'a' (Login OK)
+<li>Fields: 0
+</ul>
+<p>Thus the ICB Login OK Packet has the following layout:</p>
+<pre>a</pre>
+<h3>'b' : Open Message packet</h3>
+<h4>Client to Server</h4>
+<ul>
+<li>Packet Type: 'b' (Open)
+<li>Fields: 1
+<ul>
+<li>Field 0: Content of message
+</ul>
+</ul>
+<p>Thus the ICB Open Packet has the following layout:</p>
+<pre>bMessageText</pre>
+<h4>Server to Client</h4>
+<ul>
+<li>Packet Type: 'b' (Open)
+<li>Fields: 2
+<ul>
+<li>Field 0: Nickname of person who sent the message
+<li>Field 1: Content of message
+</ul>
+</ul>
+<p>Thus the ICB Open Packet has the following layout:</p>
+<pre>bNickname^AMessageText</pre>
+<h3>'c' : Personal Message Packet</h3>
+<h4>Client to Server</h4>
+<p>Not valid. Clients cannot send servers Personal Message packets.</p>
+<h4>Server to Client</h4>
+<ul>
+<li>Packet Type: 'c' (Personal)
+<li>Fields: 2
+<ul>
+<li>Field 0: Nickname of person who sent the message
+<li>Field 1: Content of Message
+</ul>
+</ul>
+<p>Thus the ICB Personal Message Packet has the following layout:</p>
+<pre>cNickname^AMessageText</pre>
+<h3>'d' : Status Message Packet</h3>
+<h4>Client to Server</h4>
+<p>Not valid. Clients cannot send servers Status Messazge packets.</p>
+<h4>Server to Client</h4>
+<ul>
+<li>Packet Type: 'd' (Status)
+<li>Fields: 2
+<ul>
+<li>Field 0: Status Message Category
+<li>Field 1: Content of Message
+</ul>
+</ul>
+<p>Thus the ICB Status Message Packet has the following layout:</p>
+<pre>dCategory^AMessageText</pre>
+<h3>'e' : Error Message Packet</h3>
+<h4>Client to Server</h4>
+<p>Not valid. Clients cannot send servers Error Message packets.</p>
+<h4>Server to Client</h4>
+<ul>
+<li>Packet Type: 'e' (Error)
+<li>Fields: 1
+<ul>
+<li>Field 0: Content of Message
+</ul>
+</ul>
+<p>Thus the ICB Error Message Packet has the following layout:</p>
+<pre>eMessageText</pre>
+<h3>'f' : Important Message Packet</h3>
+<h4>Client to Server</h4>
+<p>Not valid. Clients cannot send servers Important Message packets.</p>
+<h4>Server to Client</h4>
+<ul>
+<li>Packet Type: 'f' (Important)
+<li>Fields: 2
+<ul>
+<li>Field 0: Important Message Category
+<li>Field 1: Content of Message
+</ul>
+</ul>
+<p>Thus the ICB Important Message Packet has the following layout:</p>
+<pre>fCategory^AMessageText</pre>
+<h3>'g' : Exit Packet</h3>
+<h4>Client to Server</h4>
+<p>Not valid. Clients cannot send servers Exit Message packets.</p>
+<h4>Server to Client</h4>
+<ul>
+<li>Packet Type: 'g' (Exit)
+<li>Fields: 0
+</ul>
+<p>Thus the ICB Exit Message Packet has the following layout:</p>
+<pre>g</pre>
+<h3>'h' : Command Packet</h3>
+<h4>Client to Server</h4>
+<ul>
+<li>Packet Type: 'h' (Command)
+<li>Fields: Minimum: 1, Maximum: 3
+<ul>
+<li>Field 0: Command. Required.
+<li>Field 1: Arguments. Optional.
+<li>Field 2: Message ID. Optional.
+</ul>
+</ul>
+<p>Thus the ICB Command Packet has the following layout:</p>
+<pre>hCommand^AArguments^AMessageID</pre>
+<h4>Server to Client</h4>
+<p>Not valid. Servers cannot send clients Command packets.</p>
+<h3>'i' : Command Output Packet</h3>
+<h4>Client to Server</h4>
+<p>Not valid. Clients cannot send servers Command Output packets.</p>
+<h4>Server to Client</h4>
+<ul>
+<li>Packet Type: 'i' (Command Output)
+<li>Fields: Minimum: 1, Maximum: Variable
+<ul>
+<li>Field 0: Output Type. Required.
+<li>Fields 1 thru n-1: Various Output. Optional.
+<li>Field n: Message ID. Optional.
+</ul>
+</ul>
+<p>Thus the ICB Command Output Packet has the following layout:</p>
+<pre>iOutputType^AOutput^AOutput...^AMessageID</pre>
+<h3>'j' : Protocol Packet</h3>
+<h4>Client to Server</h4>
+<ul>
+<li>Packet Type: 'j' (Protocol)
+<li>Fields: Minimum: 1, Maximum: 3
+<ul>
+<li>Field 0: Protocol Level. Required.
+<li>Field 1: Host ID. Optional.
+<li>Field 2: Client ID. Optional.
+</ul>
+</ul>
+<p>Thus the ICB Protocol Packet has the following layout:</p>
+<pre>jProtoLevel^AHostID^AClientID</pre>
+<h4>Server to Client</h4>
+<ul>
+<li>Packet Type: 'j' (Protocol)
+<li>Fields: Minimum: 1, Maximum: 3
+<ul>
+<li>Field 0: Protocol Level. Required.
+<li>Field 1: Host ID. Optional.
+<li>Field 2: Server ID. Optional.
+</ul>
+</ul>
+<p>Thus the ICB Protocol Packet has the following layout:</p>
+<pre>jProtoLevel^AHostID^AServerID</pre>
+<h3>'k' : Beep Packet</h3>
+<h4>Client to Server</h4>
+<p>Not valid. Clients cannot send servers Beep packets.</p>
+<h4>Server to Client</h4>
+<ul>
+<li>Packet Type: 'k' (Beep)
+<li>Fields: 1
+<ul>
+<li>Field 0: Nickname of person who sent beep
+</ul>
+</ul>
+<p>Thus the ICB Beep Packet has the following layout:</p>
+<pre>kNickname</pre>
+<h3>'l' : Ping Packet</h3>
+<h4>Client to Server</h4>
+<ul>
+<li>Packet Type: 'l' (Ping)
+<li>Fields: Minimum: 0, Maximum: 1
+<ul>
+<li>Field 0: Message Identifier. Optional.
+</ul>
+</ul>
+<p>Thus the ICB Ping Packet has the following layout:</p>
+<pre>lMessageID</pre>
+<h4>Server to Client</h4>
+<ul>
+<li>Packet Type: 'l' (Ping)
+<li>Fields: Minimum: 0, Maximum: 1
+<ul>
+<li>Field 0: Message Identifier. Optional.
+</ul>
+</ul>
+<p>Thus the ICB Ping Packet has the following layout:</p>
+<pre>lMessageID</pre>
+
+<h3>'m' : Pong Packet</h3>
+<h4>Client to Server</h4>
+<ul>
+<li>Packet Type: 'm' (Pong)
+<li>Fields: Minimum: 0, Maximum: 1
+<ul>
+<li>Field 0: Message Identifier. Optional.
+</ul>
+</ul>
+<p>Thus the ICB Pong Packet has the following layout:</p>
+<pre>mMessageID</pre>
+<h4>Server to Client</h4>
+<ul>
+<li>Packet Type: 'm' (Pong)
+<li>Fields: Minimum: 0, Maximum: 1
+<ul>
+<li>Field 0: Message Identifier. Optional.
+</ul>
+</ul>
+<p>Thus the ICB Pong Packet has the following layout:</p>
+<pre>mMessageID</pre>
+
+<h3>'n' : No-op Packet</h3>
+<h4>Client to Server</h4>
+<ul>
+<li>Packet Type: 'n' (No-op)
+<li>Fields: Minimum: 0, Maximum: 0
+</ul>
+<p>Thus the ICB Pong Packet has the following layout:</p>
+<pre>n</pre>
+
+<h2>The Life Cycle of an ICB session</h2>
+<p>The steps a typical ICB session goes thru is as follows:</p>
+<ul>
+<li>The client opens a connection to the server.
+<li>The server sends the client a Protocol packet.
+<li>The client sends the server a Login packet. 
+<li>If the login packet command is "w", a listing of the current ICB users is 
+sent to the client, and then the server sends the client an Exit packet,
+and the client closes the connection.
+<li>If the login packet command is "login", the server sends a Login OK packet
+<li>The client and server send any number of Open, Personal, Status, 
+Error, Important, Command, Command Output, Beep, Ping and Pong packets
+according to the above rules.
+<li>(Optional) The server sends the client an Exit packet.
+<li>The client closes the connection.
+</ul>
+
+<h2>Further Information on Various Packet Types</h2>
+<h3>Login Packet</h3>
+<p>The client can send one and only one Login Packet to the server.</p>
+<h3>Message IDs in Command and Command Output</h3>
+<p>If the client sends the server a Command packet that contains a Message
+ID, all output sent from the server to the client in response to that
+Command should place the same Message ID in the Command output packet.</p>
+<h3>Ping and Pong</h3>
+<p>When one side receives a Ping packet, it sends a Pong packet back in
+response. As with Command/Command Output, if the Ping contains a Message ID,
+the Pong packet should contain the same ID.</p>
+<h3>Command Output Types</h3>
+<p>There are various Command Output Types. The ones currently defined are:</p>
+<ul>
+<li>"co" : Generic command output
+<li>"ec" : Indicates end of output data from command
+<li>"wl" : In a who listing, a line of output listing a user. Has the following format:
+<ul>
+<li>Field 1: String indicating whether user is moderator or not. Usually "*"
+for moderator, and " " for not.
+<li>Field 2: Nickname of user.
+<li>Field 3: Number of seconds user has been idle.
+<li>Field 4: Response Time. No longer in use.
+<li>Field 5: Login Time. Unix <i>time_t</i> format. Seconds since Jan. 1, 1970 GMT.
+<li>Field 6: Username of user.
+<li>Field 7: Hostname of user.
+<li>Field 8: Registration status.
+</ul>
+<p>Thus the "wl" Command Output packet has the following layout:</p>
+<pre>iwl^AMod^ANickname^AIdle^AResp^ALoginTime^AUserID^AHostID^ARegisterInfo</pre>
+<li>"wg" : In a who listing, a line of output listing a group. Has the
+following format:
+<ul>
+<li>Field 1: Group name.
+<li>Field 2: Group topic.
+</ul>
+<p>Thus the "wg" Command Output packet has the following layout:
+<pre>iwg^AGroupName^AGroupTopic</pre>
+<li>"wh" : Tell client to output header for who listing output. Deprecated.
+<li>"gh" : Tell client to output a group header for who listing output. 
+Deprecated.
+<li>"ch" : Tell client to list all the commands it handles internally. Deprecated.
+<li>"c"  : Tell client to list a single command. Deprecated.
+</ul>
+<h2>Protocol Negotiation</h2>
+<p>There is currently no way for the client and server to negotiate a
+protocol level. A proposed method for implementing it will be added
+here at a later date.</p>
+
+</body>
+</html>
