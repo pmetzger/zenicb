@@ -135,27 +135,27 @@ deactivating the trigger via /trigger subcommands."
             (setq trigger-table (cdr trigger-table)))))))
 
 
-; (defun zenicb-server-PRIVMSG-trigger (proc parsedmsg)
-;   (save-match-data
-;     (let ((case-fold-search t)
-;           (trigger-table zenicb-trigger-table)
-;           regexp fn)
-;       (while trigger-table
-;         (cond ((nth 1 (car trigger-table))
-;                (setq regexp (nth 2 (car trigger-table)))
-;                (and regexp
-;                     (string-match regexp (aref parsedmsg 3))
-;                     (let ((victim (zenicb-trigger-parse-sender parsedmsg))
-;                           (msg (zenicb-trigger-response
-;                                 (nth 3 (car trigger-table)))))
-;                       (zenicb-trigger-send-response proc victim msg)))))
-;         (setq trigger-table (cdr trigger-table))))))
+;; (defun zenicb-server-PRIVMSG-trigger (proc parsedmsg)
+;;   (save-match-data
+;;     (let ((case-fold-search t)
+;;           (trigger-table zenicb-trigger-table)
+;;           regexp fn)
+;;       (while trigger-table
+;;         (cond ((nth 1 (car trigger-table))
+;;                (setq regexp (nth 2 (car trigger-table)))
+;;                (and regexp
+;;                     (string-match regexp (aref parsedmsg 3))
+;;                     (let ((victim (zenicb-trigger-parse-sender parsedmsg))
+;;                           (msg (zenicb-trigger-response
+;;                                 (nth 3 (car trigger-table)))))
+;;                       (zenicb-trigger-send-response proc victim msg)))))
+;;         (setq trigger-table (cdr trigger-table))))))
 
-; (defun zenicb-trigger-parse-sender (parsedmsg)
-;   (let ((from (aref parsedmsg 2)))
-;     (cond ((zenicb-names-equal-p from zenicb-nick)
-;            (zenicb-extract-nick (aref parsedmsg 1)))
-;           (t from))))
+;; (defun zenicb-trigger-parse-sender (parsedmsg)
+;;   (let ((from (aref parsedmsg 2)))
+;;     (cond ((zenicb-names-equal-p from zenicb-nick)
+;;            (zenicb-extract-nick (aref parsedmsg 1)))
+;;           (t from))))
 
 (defun zenicb-trigger-response (fn msg)
   (cond ((stringp fn) fn)
@@ -178,7 +178,7 @@ deactivating the trigger via /trigger subcommands."
         (t
          (while msg
            (zenicb-message 'trigger-sent victim (car msg))
-;          (zenicb-send-public proc ?b (car msg))
+           ;;(zenicb-send-public proc ?b (car msg))
            (zenicb-send-public proc (car msg))
            (setq msg (cdr msg))))))
 
@@ -210,10 +210,10 @@ deactivating the trigger via /trigger subcommands."
       (sort (mapcar (function (lambda (s)
                                 (substring s (length prefix)
                                            (- (length suffix)))))
-              (all-completions prefix obarray
-                               (function
-                                (lambda (s)
-                                  (string-match re (symbol-name s))))))
+                    (all-completions prefix obarray
+                                     (function
+                                      (lambda (s)
+                                        (string-match re (symbol-name s))))))
             'string-lessp))))
 
 (defun zenicb-trigger-do-list-command (proc args)
@@ -281,23 +281,24 @@ deactivating the trigger via /trigger subcommands."
 
 (provide 'zenicb-trigger)
 
-(zenicb-lang-define-catalog 'english
-  '((trigger-sent      . "[trigger] Sent to %s: %s")
-    (trigger-enable    . "[info] Triggers enabled: %s")
-    (trigger-disable   . "[info] Triggers disabled: %s")
-    (trigger-deleted   . "[info] Triggers deleted: %s")
-    (trigger-undefined . "[info] Undefined triggers: %s")
-    (trigger-list-head . "[trigger] Name       On? Regexp          Function")
-    (trigger-list-line . "[trigger] ----       --- ------          --------")
-    (trigger-list-item . "[trigger] %-10s %-3s %-15s %s")
-    (trigger-list-end  . "[trigger] End of list.")
-    (trigger-subcommands . "[info] Trigger subcommands: %s")
-    (trigger-command-undefined . "[info] undefined trigger command: %s")))
+(zenicb-lang-define-catalog
+ 'english
+ '((trigger-sent      . "[trigger] Sent to %s: %s")
+   (trigger-enable    . "[info] Triggers enabled: %s")
+   (trigger-disable   . "[info] Triggers disabled: %s")
+   (trigger-deleted   . "[info] Triggers deleted: %s")
+   (trigger-undefined . "[info] Undefined triggers: %s")
+   (trigger-list-head . "[trigger] Name       On? Regexp          Function")
+   (trigger-list-line . "[trigger] ----       --- ------          --------")
+   (trigger-list-item . "[trigger] %-10s %-3s %-15s %s")
+   (trigger-list-end  . "[trigger] End of list.")
+   (trigger-subcommands . "[info] Trigger subcommands: %s")
+   (trigger-command-undefined . "[info] undefined trigger command: %s")))
 
 (zenicb-add-hook 'zenicb-server-b-hook 'zenicb-server-public-trigger)
 
-; (defun zenicb-message (proc msg)
-;   (zenicb-display-string proc msg))
+;; (defun zenicb-message (proc msg)
+;;   (zenicb-display-string proc msg))
 
 (defun zenicb-parse-words (line)
   (let ((list '())

@@ -54,7 +54,7 @@
   (force-mode-line-update))
 
 (defun zenicb-away (proc parsedmsg)
-  ; prevent a loop
+  ;; prevent a loop
   (if (not (or (string-match "^away: " (nth 1 parsedmsg))
                (string= zenicb-nick (nth 0 parsedmsg))))
       (zenicb-send-string proc ?h
@@ -62,7 +62,7 @@
                                   " " "away: " zenicb-away-message))))
 
 (defun zenicb-away-remind (proc parsedmsg)
-  ; remind users that they are /msg'ing someone while they're /away.
+  ;; remind users that they are /msg'ing someone while they're /away.
   (zenicb-message proc 'alreadyaway))
 
 (or (assq 'zenicb-away-mode minor-mode-alist)
@@ -72,7 +72,8 @@
 
 (provide 'zenicb-away)
 
-(zenicb-lang-define-catalog 'english
-  '((alreadyaway  . "[note] You are away.")))
+(zenicb-lang-define-catalog
+ 'english
+ '((alreadyaway  . "[note] You are away.")))
 
 ;;; End of zenicb-away.el

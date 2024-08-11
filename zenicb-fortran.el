@@ -303,9 +303,10 @@
 
 (require 'zenicb-trigger)
 
-(zenicb-trigger-register "fortran"
-    "YES I AM REALLY WRITTEN IN 3L33T FORTRAN 77!!!!!!!!!111"
-    "\\bfortran\\b")
+(zenicb-trigger-register
+ "fortran"
+ "YES I AM REALLY WRITTEN IN 3L33T FORTRAN 77!!!!!!!!!111"
+ "\\bfortran\\b")
 
 (provide 'zenicb-fortran)
 

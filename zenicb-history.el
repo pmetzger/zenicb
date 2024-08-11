@@ -57,18 +57,18 @@
 (defun zenicb-history-backward ()
   (interactive)
   (if (not zenicb-history-list-backward)
-      ; initialize variables if their reset
+      ;; initialize variables if their reset
       (setq zenicb-history-list-backward zenicb-history-list
             zenicb-history-list-current
             (buffer-substring zenicb-process-mark (point-max))
             zenicb-history-list-forward zenicb-history-list-forward))
-  ; remove contents of line
+  ;; remove contents of line
   (beginning-of-line)
   (if (not (= (point) (point-max)))
       (delete-backward-char (- (point) (point-max))))
-  ; insert previous command
+  ;; insert previous command
   (insert (car zenicb-history-list-backward))
-  ; update hairy variables
+  ;; update hairy variables
   (setq zenicb-history-list-forward (cons
                                      zenicb-history-list-current
                                      zenicb-history-list-forward)
@@ -79,16 +79,16 @@
 (defun zenicb-history-forward ()
   (interactive)
   (if (not zenicb-history-list-forward)
-      ; reset variables
+      ;; reset variables
       (setq zenicb-history-list-backward nil
             zenicb-history-list-forward nil)
-    ; remove contents of line
+    ;; remove contents of line
     (beginning-of-line)
     (if (not (= (point) (point-max)))
         (delete-backward-char (- (point) (point-max))))
-    ; insert next command
+    ;; insert next command
     (insert (car zenicb-history-list-forward))
-    ; update hairy variables
+    ;; update hairy variables
     (setq zenicb-history-list-backward (cons
                                         zenicb-history-list-current
                                         zenicb-history-list-backward)

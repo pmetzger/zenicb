@@ -40,7 +40,8 @@
 (require 'zenicb)
 
 (defun zenicb-color-install-message-catalogs ()
-  (zenicb-lang-define-catalog 'english
+  (zenicb-lang-define-catalog
+   'english
    '((color-lame-args . "[info] %s: not enough arguments.")
      (color-nonexistant . "[info] %s is not an allowed color.")
      (color-not-found . "[info] %s: not found in color list."))))

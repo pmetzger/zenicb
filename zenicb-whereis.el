@@ -48,9 +48,9 @@
 (defun zenicb-server-whereis (proc parsedmsg)
   (zenicb-send-string proc ?h (concat "whereis\C-a" (nth 0 parsedmsg))))
 
-; Do a /whereis on messages.
+;; Do a /whereis on messages.
 (zenicb-add-hook 'zenicb-server-c-hook 'zenicb-server-whereis)
-; Do a /whereis on beeps.
+;; Do a /whereis on beeps.
 (zenicb-add-hook 'zenicb-server-k-hook 'zenicb-server-whereis)
 
 (defvar zenicb-trap-table (make-vector 307 0))
@@ -75,7 +75,7 @@
           (if (or (not cached)
                   (not (string= cached nickuserhost)))
               (zenicb-display-string proc (format "[info] %s is %s@%s\n"
-                                                 nick user host))))
+                                                  nick user host))))
         (message "%s is %s@%s" nick user host)))))
 
 (defun zenicb-server-i (proc parsedmsg)

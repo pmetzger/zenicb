@@ -108,7 +108,7 @@
 (load-library "zenicb-away")
 
 ;;; use the following to ensure you never idle out
-;(load-library "zenicb-nologout")
+;;(load-library "zenicb-nologout")
 
 ;;; use the following to get history functions on M-p and M-n
 (load-library "zenicb-history")
@@ -117,7 +117,7 @@
 ;;; sees a certain string. if this sounds interesting, read the
 ;;; comments in zenicb-trigger.el and take a look at zenicb-yow.el,
 ;;; zenicb-meditate.el, zenicb-8ball.el, and zenicb-fortran.el.
-;(load-library "zenicb-trigger")
+;;(load-library "zenicb-trigger")
 
 ;;; insert time-stamps into the buffer at least every 10 minutes.
 (load-library "zenicb-stamp")

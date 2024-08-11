@@ -377,8 +377,8 @@ and start a process in it.  This is the same as calling the function from
 lisp with an argument of `t'."
   (interactive "P")
   (let* ((zenicb-buffer (if prefix
-                           (generate-new-buffer zenicb-buffer-name)
-                         (get-buffer-create zenicb-buffer-name)))
+                            (generate-new-buffer zenicb-buffer-name)
+                          (get-buffer-create zenicb-buffer-name)))
          (process (get-buffer-process zenicb-buffer)))
     (pop-to-buffer zenicb-buffer)
     (set-buffer-multibyte nil)
@@ -430,67 +430,67 @@ function is issued."
   (let ((new-server) (new-port) (new-nick) (new-channel) (new-passwd))
     (setq
      new-server
-     ; server to connect to
+     ;; server to connect to
      (or server
-     ; server is not given, query user
+         ;; server is not given, query user
          (completing-read "Server: " zenicb-server-alist nil nil
                           (or
                            (car (car zenicb-server-alist))
-                           ; last resort default
+                           ;; last resort default
                            zenicb-server-default)))
      new-port
-     ; port to connect to
+     ;; port to connect to
      (or
       port
-      ; port is not given, query user
+      ;; port is not given, query user
       (read-string "Port: "
                    (or
                     (if (car (cdr (assoc new-server zenicb-server-alist)))
                         (int-to-string
                          (car (cdr (assoc new-server zenicb-server-alist)))))
                     (if zenicb-port (int-to-string zenicb-port))
-                    ; last resort default
+                    ;; last resort default
                     (int-to-string zenicb-port-default))))
      new-nick
-     ; nickname to use
+     ;; nickname to use
      (or
       nick
-      ; nickname is not given, query user
+      ;; nickname is not given, query user
       (read-string "Nickname: "
                    (or
                     (car (nthcdr 3 (assoc new-server zenicb-server-alist)))
                     zenicb-nick
-                    ; last resort default
+                    ;; last resort default
                     (user-login-name))))
      new-channel
-     ; initial channel to join
+     ;; initial channel to join
      (or
       channel
       (read-string "Channel: "
                    (or
                     (car (nthcdr 4 (assoc new-server zenicb-server-alist)))
                     zenicb-channel
-                    ; last resort default
+                    ;; last resort default
                     zenicb-channel-default)))
      new-passwd
-     ; password.
+     ;; password.
      (or
       passwd
       (read-passwd "Enter password (default is unset): ")))
 
-    ; update zenicb-server-alist
+    ;; update zenicb-server-alist
     (let ((new-list (list new-server (string-to-number new-port) new-nick new-passwd new-channel)))
       (if (not (member new-list zenicb-server-alist))
-          ; a new entry is given
+          ;; a new entry is given
           (setq zenicb-server-alist
                 (cons new-list zenicb-server-alist))
-        ; move old entry to the top of zenicb-server-alist
+        ;; move old entry to the top of zenicb-server-alist
         (setq zenicb-server-alist (delete new-list zenicb-server-alist)
               zenicb-server-alist (cons new-list zenicb-server-alist)))
-      ; make sure we don't try to connect to anything else then the
-      ; given server
+      ;; make sure we don't try to connect to anything else then the
+      ;; given server
       (let ((zenicb-server-alist (list new-list)))
-        ; run the actual connection, at last
+        ;; run the actual connection, at last
         (zenicb t)))))
 
 (defun zenicb-establish-server-connection (buffer &optional alist)
@@ -582,13 +582,13 @@ connect to `zenicb-server-default' using defaults as described above."
 (defun zenicb-login (proc)
   (zenicb-send-string proc ?a
                       (format "%s\C-a%s\C-a%s\C-a%s\C-a%s\C-a%s\C-a%d"
-                               zenicb-login-name
-                               zenicb-nick
-                               zenicb-channel
-                               "login"
-                               zenicb-password
-                               zenicb-status
-                               0)))
+                              zenicb-login-name
+                              zenicb-nick
+                              zenicb-channel
+                              "login"
+                              zenicb-password
+                              zenicb-status
+                              0)))
 
 (defun zenicb-sentinel (proc str)
   (with-current-buffer (process-buffer proc)
@@ -660,8 +660,8 @@ connect to `zenicb-server-default' using defaults as described above."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun zenicb-send-string (proc type str)
   (let ((message (format "%c%c%s\0" (+ 2 (length str)) type str)))
-;    (zenicb-message proc 'debug (concat "Message: "
-;                                        (prin1-to-string message)))
+    ;;(zenicb-message proc 'debug (concat "Message: "
+    ;;                                    (prin1-to-string message)))
     (process-send-string proc message)))
 
 ;;
@@ -919,18 +919,18 @@ zenicb-run-next-hook is t (the default). Otherwise, the hooks after
 the one that set zenicb-run-next-hook are not called, and control is
 returned to the caller. (zenicb-run-hook) returns the value returned
 from the last hook run."
-      (let ((zenicb-run-next-hook t)
-            (result))
-        (and (boundp hooksym)
-             (symbol-value hooksym)
-             (let ((value (symbol-value hooksym)))
-               (if (and (listp value)
-                        (not (eq (car value) 'lambda)))
-                   (while (and value zenicb-run-next-hook)
-                     (setq result (apply (car value) args))
-                     (setq value (cdr value)))
-                 (setq result (apply value args)))))
-        result))
+  (let ((zenicb-run-next-hook t)
+        (result))
+    (and (boundp hooksym)
+         (symbol-value hooksym)
+         (let ((value (symbol-value hooksym)))
+           (if (and (listp value)
+                    (not (eq (car value) 'lambda)))
+               (while (and value zenicb-run-next-hook)
+                 (setq result (apply (car value) args))
+                 (setq value (cdr value)))
+             (setq result (apply value args)))))
+    result))
 ;;
 ;; add a function to a hook symbol
 ;;
@@ -1176,12 +1176,12 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;;; Command hooks
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;
-;; display byte count, time connected, etc.
-;; /bcount [victim]
-;;
-;(defun zenicb-command-bcount (proc parsedcmd)
-;  (zenicb-send-string proc ?h (concat "m\C-aserver bcount " (cdr parsedcmd))))
+;;;
+;;; display byte count, time connected, etc.
+;;; /bcount [victim]
+;;;
+;;(defun zenicb-command-bcount (proc parsedcmd)
+;;  (zenicb-send-string proc ?h (concat "m\C-aserver bcount " (cdr parsedcmd))))
 
 ;;
 ;; Reach out and beep someone
@@ -1210,7 +1210,7 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;;
 (defun zenicb-command-command-char (proc parsedcmd)
   (if (not (string= "" (cdr parsedcmd)))
-           (setq zenicb-command-char (string-to-char (cdr parsedcmd)))))
+      (setq zenicb-command-char (string-to-char (cdr parsedcmd)))))
 
 ;;
 ;; Delete a nickname from the server's database.
@@ -1302,11 +1302,11 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;; compatability for irc refugees
 (fset 'zenicb-command-msg 'zenicb-command-m)
 
-;;
-;; Read some weird messages (I have no idea what this is)
-;;
-;(defun zenicb-command-mess (proc parsecmd)
-;  (zenicb-send-string proc ?h "m\C-aserver mess"))
+;;;
+;;; Read some weird messages (I have no idea what this is)
+;;;
+;;(defun zenicb-command-mess (proc parsecmd)
+;;  (zenicb-send-string proc ?h "m\C-aserver mess"))
 
 ;;
 ;; Read the message-of-the-day
@@ -1376,15 +1376,15 @@ calls of zenicb-timer-hook is how often a server pings the client."
          (zenicb-message proc 'queryon (cdr parsedcmd))))
   (force-mode-line-update))
 
-;;
-;; ping a luser.
-;; /ping victim
-;;
-;; (Unclear what this was supposed to do; the call to zenicb-send-string
-;; is incorrect because it includes no "type" parameter. Comment out for now.)
-;;
-;(defun zenicb-command-ping (proc parsedcmd)
-;  (zenicb-send-string proc (concat "ping\C-a" (cdr parsedcmd))))
+;;;
+;;; ping a luser.
+;;; /ping victim
+;;;
+;;; (Unclear what this was supposed to do; the call to zenicb-send-string
+;;; is incorrect because it includes no "type" parameter. Comment out for now.)
+;;;
+;;(defun zenicb-command-ping (proc parsedcmd)
+;;  (zenicb-send-string proc (concat "ping\C-a" (cdr parsedcmd))))
 
 ;;
 ;; quit icb
@@ -1602,30 +1602,31 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;; English is the default catalog.  Other catalogs are available in
 ;; separate files.
 (defun zenicb-lang-define-english-catalog ()
-  (zenicb-lang-define-catalog 'english
-    '((beep     . "[beep] %s wants to annoy you.") ; nickname sent a beep
-      (connect-abort . "[info] Aborted attempt to connect to an icb server.")
-      (connect-failed . "[error] Couldn't connect to %s port %d, reason: %s"); host, port, reason
-      (connect-try . "[info] Connecting to %s port %d...") ; host, port
-      (debug    . "[debug] %s")         ; displayed by debugging code
-      (errormsg . "[error] %s")         ; an error reported by the server
-      (goaway   . "[info] Server wants you to go away.")
-      (loginok  . "[info] You are wasting time.")
-      (nocatalog . "[error] No message catalog defined for %s") ; unknown catalog name
-      (nocmd    . "[info] No such command: %s") ; unknown command
-      (ping     . "[info] You were pinged by %s!")
-      (pong     . "[info] Pong: %s")
-      (private  . "*%s* %s")            ; nickname, message
-      (protocol . "[info] Connected to server %s version %s\n[info] running ICB protocol version %s") ; nth 0, nth 2, nth 1 of parsedmsg
-      (public   . "<%s> %s")            ; nickname, message
-      (queryoff . "[info] Directing output to current channel.")
-      (queryon  . "[info] Directing output to %s.") ; nickname
-      (quit     . "[info] You are wasting time elsewhere.")
-      (newcatalog . "[info] Current message catalog set to %s") ; message catalog name
-      (sentinel . "\nZenICB ended at %s") ; process sentinel message
-      (server   . "[server] %s")         ; unknown server message
-      (signal   . "[signal in %s]")     ; signal in echo area
-      (status   . "[info] %s: %s"))))   ; server status message
+  (zenicb-lang-define-catalog
+   'english
+   '((beep     . "[beep] %s wants to annoy you.") ; nickname sent a beep
+     (connect-abort . "[info] Aborted attempt to connect to an icb server.")
+     (connect-failed . "[error] Couldn't connect to %s port %d, reason: %s"); host, port, reason
+     (connect-try . "[info] Connecting to %s port %d...") ; host, port
+     (debug    . "[debug] %s")         ; displayed by debugging code
+     (errormsg . "[error] %s")         ; an error reported by the server
+     (goaway   . "[info] Server wants you to go away.")
+     (loginok  . "[info] You are wasting time.")
+     (nocatalog . "[error] No message catalog defined for %s") ; unknown catalog name
+     (nocmd    . "[info] No such command: %s") ; unknown command
+     (ping     . "[info] You were pinged by %s!")
+     (pong     . "[info] Pong: %s")
+     (private  . "*%s* %s")            ; nickname, message
+     (protocol . "[info] Connected to server %s version %s\n[info] running ICB protocol version %s") ; nth 0, nth 2, nth 1 of parsedmsg
+     (public   . "<%s> %s")            ; nickname, message
+     (queryoff . "[info] Directing output to current channel.")
+     (queryon  . "[info] Directing output to %s.") ; nickname
+     (quit     . "[info] You are wasting time elsewhere.")
+     (newcatalog . "[info] Current message catalog set to %s") ; message catalog name
+     (sentinel . "\nZenICB ended at %s") ; process sentinel message
+     (server   . "[server] %s")         ; unknown server message
+     (signal   . "[signal in %s]")     ; signal in echo area
+     (status   . "[info] %s: %s"))))   ; server status message
 
 
 ;;; misc code
