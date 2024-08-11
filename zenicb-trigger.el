@@ -92,7 +92,7 @@ deactivating the trigger via /trigger subcommands."
            (setcar (nthcdr 1 elt) t)
            (setcar (nthcdr 2 elt) regexp)
            (setcar (nthcdr 3 elt) response)
-	   (setcar (nthcdr 4 elt) pass-string))
+           (setcar (nthcdr 4 elt) pass-string))
           (t
            (setq zenicb-trigger-table
                  (cons (list name t regexp response pass-string)
@@ -118,21 +118,21 @@ deactivating the trigger via /trigger subcommands."
 (defun zenicb-server-public-trigger (proc parsedmsg)
   (if (not (string-match zenicb-nick (nth 0 parsedmsg)))
       (save-match-data
-	(let ((case-fold-search t)
-	      (trigger-table zenicb-trigger-table)
-	      regexp fn)
-	  (while trigger-table
-	    (cond ((nth 1 (car trigger-table))
-		   (setq regexp (nth 2 (car trigger-table)))
-		   (and regexp
-			(string-match regexp (nth 1 parsedmsg))
-			(let ((victim (nth 0 parsedmsg))
-			      (msg (zenicb-trigger-response
-				    (nth 3 (car trigger-table))
-				    (and (nth 4 (car trigger-table))
-					 (match-string 0 (nth 1 parsedmsg))))))
-			  (zenicb-trigger-send-response proc victim msg)))))
-	    (setq trigger-table (cdr trigger-table)))))))
+        (let ((case-fold-search t)
+              (trigger-table zenicb-trigger-table)
+              regexp fn)
+          (while trigger-table
+            (cond ((nth 1 (car trigger-table))
+                   (setq regexp (nth 2 (car trigger-table)))
+                   (and regexp
+                        (string-match regexp (nth 1 parsedmsg))
+                        (let ((victim (nth 0 parsedmsg))
+                              (msg (zenicb-trigger-response
+                                    (nth 3 (car trigger-table))
+                                    (and (nth 4 (car trigger-table))
+                                         (match-string 0 (nth 1 parsedmsg))))))
+                          (zenicb-trigger-send-response proc victim msg)))))
+            (setq trigger-table (cdr trigger-table)))))))
 
 
 ; (defun zenicb-server-PRIVMSG-trigger (proc parsedmsg)
@@ -160,9 +160,9 @@ deactivating the trigger via /trigger subcommands."
 (defun zenicb-trigger-response (fn msg)
   (cond ((stringp fn) fn)
         (t
-	 (if msg
-	     (funcall fn msg)
-	   (funcall fn)))))
+         (if msg
+             (funcall fn msg)
+           (funcall fn)))))
 
 (defun zenicb-trigger-send-fn-result (proc victim fn &optional msg)
   (setq victim (cdr victim))
@@ -174,12 +174,12 @@ deactivating the trigger via /trigger subcommands."
 (defun zenicb-trigger-send-response (proc victim msg)
   (cond ((stringp msg)
          (zenicb-message proc 'trigger-sent victim msg)
-	 (zenicb-send-string proc ?b msg))
+         (zenicb-send-string proc ?b msg))
         (t
          (while msg
            (zenicb-message 'trigger-sent victim (car msg))
-;	   (zenicb-send-public proc ?b (car msg))
-	   (zenicb-send-public proc (car msg))
+;          (zenicb-send-public proc ?b (car msg))
+           (zenicb-send-public proc (car msg))
            (setq msg (cdr msg))))))
 
 
@@ -265,7 +265,7 @@ deactivating the trigger via /trigger subcommands."
 
 (defun zenicb-trigger-do-activation (proc args state)
   (let ((msg (if state "[info] Triggers enabled: %s\n" "[info] Triggers disabled: %s\n"))
-	(names (zenicb-parse-words args))
+        (names (zenicb-parse-words args))
         (known nil)
         (unknown nil))
     (while names
@@ -301,7 +301,7 @@ deactivating the trigger via /trigger subcommands."
 
 (defun zenicb-parse-words (line)
   (let ((list '())
-	(posn 0))
+        (posn 0))
     (save-match-data
       (while (string-match "[^ \t\n]+" line posn)
         (setq list (cons (substring line (match-beginning 0) (match-end 0))

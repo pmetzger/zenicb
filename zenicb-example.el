@@ -81,8 +81,8 @@
 
 ;; if you want timestamps on private or public messages
 ;; with default prefix and suffix it looks like
-;;	*ben[13:31]* lets have some fun
-;;	<ben#twilight_zone[13:32]> SLUGS AND KNIGHTS! SLUGS AND KNIGTS!
+;;      *ben[13:31]* lets have some fun
+;;      <ben#twilight_zone[13:32]> SLUGS AND KNIGHTS! SLUGS AND KNIGTS!
 (setq zenicb-timestamp nil
       zenicb-timestamp-prefix "["
       zenicb-timestamp-suffix "]")
@@ -92,9 +92,9 @@
 ;; like
 
 ;;(setq zenicb-mode-hook '(lambda ()
-;;			   (load "zenicb-add") ;give me time-stamps on messages
-;;			   (load "zenicb-whereis") ;do auto-whereis
-;;			   (setq zenicb-mode-hook nil)))
+;;                         (load "zenicb-add") ;give me time-stamps on messages
+;;                         (load "zenicb-whereis") ;do auto-whereis
+;;                         (setq zenicb-mode-hook nil)))
 
 ;; zenicb can beep when someone sends you a /beep
 ;; nil -> don't beep

@@ -33,8 +33,8 @@
 ;;; This file should be loaded via zenicb-mode-hook, as in
 
 ;;; (setq zenicb-mode-hook '(lambda ()
-;;; 				  (load "zenicb-add")
-;;; 				  (setq zenicb-mode-hook nil)))
+;;;                               (load "zenicb-add")
+;;;                               (setq zenicb-mode-hook nil)))
 ;;;
 
 ;;; Currently, I use it to display timestamps in public/private messages
@@ -47,18 +47,18 @@
   (if (eq zenicb-alert 'all)
       (ding t))
   (zenicb-display-string proc (format "%s <%s> %s\n"
-				      (substring (current-time-string) 11 16)
-				      (nth 0 parsedmsg)
-				      (nth 1 parsedmsg))))
+                                      (substring (current-time-string) 11 16)
+                                      (nth 0 parsedmsg)
+                                      (nth 1 parsedmsg))))
 
 (defun zenicb-server-c (proc parsedmsg)
   (setq zenicb-msg-last-rec (nth 0 parsedmsg))
   (if (or (eq zenicb-alert 'personal)
-	  (eq zenicb-alert 'all))
+          (eq zenicb-alert 'all))
       (ding t))
   (zenicb-display-string proc (format "%s *%s* %s\n"
-				      (substring (current-time-string) 11 16)
-				      (nth 0 parsedmsg)
-				      (nth 1 parsedmsg))))
+                                      (substring (current-time-string) 11 16)
+                                      (nth 0 parsedmsg)
+                                      (nth 1 parsedmsg))))
 
 ;;; end.

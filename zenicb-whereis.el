@@ -57,26 +57,26 @@
 
 (defun zenicb-trap-whereis-info (proc parsedmsg)
   (let ((str (car (cdr parsedmsg)))
-	nick user host nickuserhost)
+        nick user host nickuserhost)
     (save-match-data
       (string-match "\\([^ ]+\\)\\ +\\([^@]+\\)@\\(.*\\)" str)
       (setq nick (match-string 1 str)
-	    user (match-string 2 str)
-	    host (match-string 3 str)))
+            user (match-string 2 str)
+            host (match-string 3 str)))
     (if (or (null nick) (null user) (null host))
-	(zenicb-display-string proc (format "[info] %s\n" str))
+        (zenicb-display-string proc (format "[info] %s\n" str))
       (progn
-	(setq nick (downcase nick))
-	(let* ((nicksym (intern nick zenicb-trap-table))
-	       (cached (and (boundp nicksym)
-			    (symbol-value nicksym)))
-	       (nickuserhost (format "%s!%s@%s" nick user host)))
-	  (set nicksym nickuserhost)
-	  (if (or (not cached)
-		  (not (string= cached nickuserhost)))
-	      (zenicb-display-string proc (format "[info] %s is %s@%s\n"
-						 nick user host))))
-	(message "%s is %s@%s" nick user host)))))
+        (setq nick (downcase nick))
+        (let* ((nicksym (intern nick zenicb-trap-table))
+               (cached (and (boundp nicksym)
+                            (symbol-value nicksym)))
+               (nickuserhost (format "%s!%s@%s" nick user host)))
+          (set nicksym nickuserhost)
+          (if (or (not cached)
+                  (not (string= cached nickuserhost)))
+              (zenicb-display-string proc (format "[info] %s is %s@%s\n"
+                                                 nick user host))))
+        (message "%s is %s@%s" nick user host)))))
 
 (defun zenicb-server-i (proc parsedmsg)
   (let ((reply-type (nth 0 parsedmsg)))
@@ -87,20 +87,20 @@
      ((string= reply-type "wl") ; who reply
       (zenicb-display-string
        proc (format "[info] %s%-12s%5s  %s  %s@%s %s\n"
-		    (if (string= (nth 1 parsedmsg) "m") "*" " ")
-		    (nth 2 parsedmsg)
-		    (zenicb-convert-time (nth 3 parsedmsg))
-		    (zenicb-convert-date (nth 5 parsedmsg))
-		    (nth 6 parsedmsg)
-		    (nth 7 parsedmsg)
-		    (nth 8 parsedmsg))))
+                    (if (string= (nth 1 parsedmsg) "m") "*" " ")
+                    (nth 2 parsedmsg)
+                    (zenicb-convert-time (nth 3 parsedmsg))
+                    (zenicb-convert-date (nth 5 parsedmsg))
+                    (nth 6 parsedmsg)
+                    (nth 7 parsedmsg)
+                    (nth 8 parsedmsg))))
      ((string= reply-type "co") ; comment
       (zenicb-trap-whereis-info proc parsedmsg))
      (t
       (zenicb-display-string
        proc (format "[debug] packet type i, subtype %s, data %s\n"
-		    (prin1-to-string reply-type)
-		    (prin1-to-string parsedmsg)))))))
+                    (prin1-to-string reply-type)
+                    (prin1-to-string parsedmsg)))))))
 
 
 (provide 'zenicb-whereis)

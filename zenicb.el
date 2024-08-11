@@ -433,35 +433,35 @@ function is issued."
      ; server to connect to
      (or server
      ; server is not given, query user
-	 (completing-read "Server: " zenicb-server-alist nil nil
-			  (or
-			   (car (car zenicb-server-alist))
-			   ; last resort default
-			   zenicb-server-default)))
+         (completing-read "Server: " zenicb-server-alist nil nil
+                          (or
+                           (car (car zenicb-server-alist))
+                           ; last resort default
+                           zenicb-server-default)))
      new-port
      ; port to connect to
      (or
       port
       ; port is not given, query user
       (read-string "Port: "
-		   (or
-		    (if (car (cdr (assoc new-server zenicb-server-alist)))
-			(int-to-string
-			 (car (cdr (assoc new-server zenicb-server-alist)))))
-		    (if zenicb-port (int-to-string zenicb-port))
-		    ; last resort default
-		    (int-to-string zenicb-port-default))))
+                   (or
+                    (if (car (cdr (assoc new-server zenicb-server-alist)))
+                        (int-to-string
+                         (car (cdr (assoc new-server zenicb-server-alist)))))
+                    (if zenicb-port (int-to-string zenicb-port))
+                    ; last resort default
+                    (int-to-string zenicb-port-default))))
      new-nick
      ; nickname to use
      (or
       nick
       ; nickname is not given, query user
       (read-string "Nickname: "
-		   (or
-		    (car (nthcdr 3 (assoc new-server zenicb-server-alist)))
-		    zenicb-nick
-		    ; last resort default
-		    (user-login-name))))
+                   (or
+                    (car (nthcdr 3 (assoc new-server zenicb-server-alist)))
+                    zenicb-nick
+                    ; last resort default
+                    (user-login-name))))
      new-channel
      ; initial channel to join
      (or
@@ -481,17 +481,17 @@ function is issued."
     ; update zenicb-server-alist
     (let ((new-list (list new-server (string-to-number new-port) new-nick new-passwd new-channel)))
       (if (not (member new-list zenicb-server-alist))
-	  ; a new entry is given
-	  (setq zenicb-server-alist
-		(cons new-list zenicb-server-alist))
-	; move old entry to the top of zenicb-server-alist
-	(setq zenicb-server-alist (delete new-list zenicb-server-alist)
-	      zenicb-server-alist (cons new-list zenicb-server-alist)))
+          ; a new entry is given
+          (setq zenicb-server-alist
+                (cons new-list zenicb-server-alist))
+        ; move old entry to the top of zenicb-server-alist
+        (setq zenicb-server-alist (delete new-list zenicb-server-alist)
+              zenicb-server-alist (cons new-list zenicb-server-alist)))
       ; make sure we don't try to connect to anything else then the
       ; given server
       (let ((zenicb-server-alist (list new-list)))
-	; run the actual connection, at last
-	(zenicb t)))))
+        ; run the actual connection, at last
+        (zenicb t)))))
 
 (defun zenicb-establish-server-connection (buffer &optional alist)
   "Waste time by connecting to an ICB server.
@@ -520,62 +520,62 @@ connect to `zenicb-server-default' using defaults as described above."
       (let ((procname (concat "zenicb:" (buffer-name)))
             ent server port proc)
         (while alist
-	  (setq ent (car alist))
-	  (setq alist (cdr alist))
+          (setq ent (car alist))
+          (setq alist (cdr alist))
 
-	  (setq server (or (car ent)
-			   zenicb-server-default
-			   (error "no server specified.")))
+          (setq server (or (car ent)
+                           zenicb-server-default
+                           (error "no server specified.")))
 
-	  (setq port (or (nth 1 ent)
-		         zenicb-port-default
-		         7326))
+          (setq port (or (nth 1 ent)
+                         zenicb-port-default
+                         7326))
 
-	  (condition-case data
-	      (progn
-	        (zenicb-message buffer 'connect-try server port)
-	        ;; Do a redisplay before connecting, in case the server is
-	        ;; slow to respond.
-	        (sit-for 0)
-	        (setq proc (funcall zenicb-process-connect-function
-				    procname buffer server port))
-	        ;; Update connection status in modeline.
-	        (force-mode-line-update)
-	        (setq alist nil)
-	        (setq zenicb-server          server)
+          (condition-case data
+              (progn
+                (zenicb-message buffer 'connect-try server port)
+                ;; Do a redisplay before connecting, in case the server is
+                ;; slow to respond.
+                (sit-for 0)
+                (setq proc (funcall zenicb-process-connect-function
+                                    procname buffer server port))
+                ;; Update connection status in modeline.
+                (force-mode-line-update)
+                (setq alist nil)
+                (setq zenicb-server          server)
 
-	        (setq zenicb-port            port)
+                (setq zenicb-port            port)
                 (setq zenicb-nick            (or (nth 2 ent)
                                                  zenicb-nick-default
                                                  (user-login-name)
                                                  "nil")) ; it -is- funny
-	        (setq zenicb-password        (or (nth 3 ent)
-					         zenicb-password-default))
+                (setq zenicb-password        (or (nth 3 ent)
+                                                 zenicb-password-default))
                 (setq zenicb-channel (or (nth 4 ent)
                                          zenicb-channel-default
                                          "Meditation"))
-	        (setq zenicb-login-name (or (nth 5 ent)
+                (setq zenicb-login-name (or (nth 5 ent)
                                             zenicb-login-name-default
                                             (getenv "USER")
                                             (user-login-name)
                                             "nil")))
-	    (quit
-	     (setq alist nil)
-	     (zenicb-message buffer 'connect-abort))
+            (quit
+             (setq alist nil)
+             (zenicb-message buffer 'connect-abort))
 
-	    (file-error
-	     ;; file-error "connection failed" "connection timed out" host proc
-	     ;; file-error "connection failed" "connection refused" host proc
-	     (if (string= (nth 1 data) "connection failed")
-	         (zenicb-message buffer 'connect-failed server port
-			         (nth 2 data))
-	       (signal 'file-error data)))
-	    (error
-	     ;; data == (error "Unknown host \"foo\"")
-	     (if (string-match "^Unknown host" (nth 1 data))
-	         (zenicb-message buffer 'connect-failed server port
-			         (nth 1 data))
-	       (apply 'signal data)))))
+            (file-error
+             ;; file-error "connection failed" "connection timed out" host proc
+             ;; file-error "connection failed" "connection refused" host proc
+             (if (string= (nth 1 data) "connection failed")
+                 (zenicb-message buffer 'connect-failed server port
+                                 (nth 2 data))
+               (signal 'file-error data)))
+            (error
+             ;; data == (error "Unknown host \"foo\"")
+             (if (string-match "^Unknown host" (nth 1 data))
+                 (zenicb-message buffer 'connect-failed server port
+                                 (nth 1 data))
+               (apply 'signal data)))))
         proc))))
 
 ;; send nick, user-name, initial-channel, initial-status, and password
@@ -615,12 +615,12 @@ connect to `zenicb-server-default' using defaults as described above."
 ;; done for that server message is done.
 (defun zenicb-parse-output (proc string)
   (while (let ((length (aref string 0)))
-	   (and (> (length string) length)
-		(let ((type (aref string 1))
-		      (line (substring string 2 length)))
-		  (setq string (substring string (1+ length)))
-		  (zenicb-parseline proc type line)
-		  (not (string-equal string ""))))))
+           (and (> (length string) length)
+                (let ((type (aref string 1))
+                      (line (substring string 2 length)))
+                  (setq string (substring string (1+ length)))
+                  (zenicb-parseline proc type line)
+                  (not (string-equal string ""))))))
   string)
 
 (defun zenicb-parseline (proc type string)
@@ -651,8 +651,8 @@ connect to `zenicb-server-default' using defaults as described above."
       (setq s "\C-a"))
   (let ((posn (string-match s line)))
     (if posn
-	(cons (substring line 0 posn)
-	      (zenicb-split-string (substring line (1+ posn)) s))
+        (cons (substring line 0 posn)
+              (zenicb-split-string (substring line (1+ posn)) s))
       (cons line nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -676,8 +676,8 @@ connect to `zenicb-server-default' using defaults as described above."
 (defun zenicb-parse-firstword (string)
   (save-match-data
     (if (string-match "\\( +\\)" string)
-	(cons (substring string 0 (match-beginning 1))
-	      (substring string (match-end 1)))
+        (cons (substring string 0 (match-beginning 1))
+              (substring string (match-end 1)))
       (cons string ""))))
 
 (defun zenicb-send-line ()
@@ -687,50 +687,50 @@ connect to `zenicb-server-default' using defaults as described above."
   (insert "\n")
   (let* ((proc (get-buffer-process (current-buffer)))
          (proc-mark zenicb-process-mark)
-	 (string (buffer-substring proc-mark (point)))
-	 (posn 0))
+         (string (buffer-substring proc-mark (point)))
+         (posn 0))
     (if (< proc-mark (point))
-	(progn
-	  (set-marker proc-mark (point))
-	  (save-match-data
-	    (if (not (string-match "\\`\\s-*\\'" string)) ; No blank strings
-		(progn
-		  ;; Handle newlines in input.
-		  (while (string-match "\\(\\`\\|\n\\)\\(\\s-*\n\\)" string)
-		    (setq string (concat (substring
-					  string 0 (match-beginning 2))
-					 (substring string (match-end 2)))))
-		  (if zenicb-send-lines
-		      (progn
-			(while (string-match "\n" string 0)
-			  (aset string (match-beginning 0) 32)
-			  (setq posn (match-end 0)))
-			(zenicb-run-hook 'zenicb-send-line-hook
-					 (substring string 0 -1))
-			(cond ((eq (aref string 0) zenicb-command-char)
-			       (zenicb-do-command proc
-						  (substring string 1 -1)))
-			      ((not (eq zenicb-current-victim nil))
-			       (zenicb-split (substring string 0 -1) 220
-					     'zenicb-send-private proc
-					     zenicb-current-victim))
-			      (t
-			       (zenicb-split (substring string 0 -1) 220
-					     'zenicb-send-public proc))))
-		    (for-each
-		     (function
-		      (lambda (ln)
-			(zenicb-run-hook 'zenicb-send-line-hook ln)
-			(cond ((eq (aref ln 0) zenicb-command-char)
-			       (zenicb-do-command proc (substring ln 1)))
-			      ((not (eq zenicb-current-victim nil))
-			       (zenicb-split ln 220
-					     'zenicb-send-private proc
-					     zenicb-current-victim))
-			      (t
-			       (zenicb-split ln 220
-					     'zenicb-send-public proc)))))
-		     (zenicb-split-string (substring string 0 -1) "\n")))))))
+        (progn
+          (set-marker proc-mark (point))
+          (save-match-data
+            (if (not (string-match "\\`\\s-*\\'" string)) ; No blank strings
+                (progn
+                  ;; Handle newlines in input.
+                  (while (string-match "\\(\\`\\|\n\\)\\(\\s-*\n\\)" string)
+                    (setq string (concat (substring
+                                          string 0 (match-beginning 2))
+                                         (substring string (match-end 2)))))
+                  (if zenicb-send-lines
+                      (progn
+                        (while (string-match "\n" string 0)
+                          (aset string (match-beginning 0) 32)
+                          (setq posn (match-end 0)))
+                        (zenicb-run-hook 'zenicb-send-line-hook
+                                         (substring string 0 -1))
+                        (cond ((eq (aref string 0) zenicb-command-char)
+                               (zenicb-do-command proc
+                                                  (substring string 1 -1)))
+                              ((not (eq zenicb-current-victim nil))
+                               (zenicb-split (substring string 0 -1) 220
+                                             'zenicb-send-private proc
+                                             zenicb-current-victim))
+                              (t
+                               (zenicb-split (substring string 0 -1) 220
+                                             'zenicb-send-public proc))))
+                    (for-each
+                     (function
+                      (lambda (ln)
+                        (zenicb-run-hook 'zenicb-send-line-hook ln)
+                        (cond ((eq (aref ln 0) zenicb-command-char)
+                               (zenicb-do-command proc (substring ln 1)))
+                              ((not (eq zenicb-current-victim nil))
+                               (zenicb-split ln 220
+                                             'zenicb-send-private proc
+                                             zenicb-current-victim))
+                              (t
+                               (zenicb-split ln 220
+                                             'zenicb-send-public proc)))))
+                     (zenicb-split-string (substring string 0 -1) "\n")))))))
       ;; if the user presses enter, jump to the bottom of the buffer
       (goto-char (point-max)))))
 
@@ -742,8 +742,8 @@ connect to `zenicb-server-default' using defaults as described above."
 ;; command line unaltered to the server.
 (defun zenicb-do-command (proc cmdline)
   (let* ((parsedcmd (zenicb-parse-firstword cmdline))
-	 (cmdname (car parsedcmd))
-	 (hook (intern (concat "zenicb-command-" cmdname "-hook"))))
+         (cmdname (car parsedcmd))
+         (hook (intern (concat "zenicb-command-" cmdname "-hook"))))
     (cond
      (zenicb-debug-commands
       (zenicb-message proc 'debug (concat "Hook: " (symbol-name hook)))
@@ -770,27 +770,27 @@ connect to `zenicb-server-default' using defaults as described above."
 (defun zenicb-send-msg-last-rec ()
   (interactive)
   (zenicb-insert-at-proc-mark (concat (char-to-string zenicb-command-char)
-				      "m ")
-			      zenicb-msg-last-rec " "))
+                                      "m ")
+                              zenicb-msg-last-rec " "))
 
 (defun zenicb-send-msg-last-sent ()
   (interactive)
   (zenicb-insert-at-proc-mark (concat (char-to-string zenicb-command-char)
-				      "m ")
-			      zenicb-msg-last-sent " "))
+                                      "m ")
+                              zenicb-msg-last-sent " "))
 
 (defun zenicb-self-insert-or-send-msg-last-rec ()
   (interactive)
   (save-match-data
     (if (= (point) zenicb-process-mark) ;(process-mark zenicb-process))
-	(zenicb-send-msg-last-rec)
+        (zenicb-send-msg-last-rec)
       (insert (this-command-keys)))))
 
 (defun zenicb-self-insert-or-send-msg-last-sent ()
   (interactive)
   (save-match-data
     (if (= (point) zenicb-process-mark) ;(process-mark zenicb-process))
-	(zenicb-send-msg-last-sent)
+        (zenicb-send-msg-last-sent)
       (insert (this-command-keys)))))
 
 (defun zenicb-timestamp-string ()
@@ -843,7 +843,7 @@ connect to `zenicb-server-default' using defaults as described above."
     (and args
          (if string
              (setq string (apply 'format string args))
-	   (setq string (format "[raw] %s" args))))
+           (setq string (format "[raw] %s" args))))
     (cond
      ((null proc-or-buffer)
       (message "%s" string))
@@ -948,14 +948,14 @@ function, it is changed to a list of functions."
   ;; If the hook value is a single function, turn it into a list.
   (let ((old (symbol-value hook)))
     (if (or (not (listp old)) (eq (car old) 'lambda))
-	(set hook (list old))))
+        (set hook (list old))))
   (or (if (consp function)
-	  (member function (symbol-value hook))
-	(memq function (symbol-value hook)))
+          (member function (symbol-value hook))
+        (memq function (symbol-value hook)))
       (set hook
-	   (if append
-	       (nconc (symbol-value hook) (list function))
-	     (cons function (symbol-value hook))))))
+           (if append
+               (nconc (symbol-value hook) (list function))
+             (cons function (symbol-value hook))))))
 ;;
 ;; remove a function from a hook symbol
 ;;
@@ -964,15 +964,15 @@ function, it is changed to a list of functions."
 HOOK should be a symbol, and FUNCTION may be any valid function.  If
 FUNCTION isn't the value of HOOK, or, if FUNCTION doesn't appear in the
 list of hooks to run in HOOK, then nothing is done.  See `zenicb-add-hook'."
-  (if (or (not (boundp hook))		;unbound symbol, or
-	  (null (symbol-value hook))	;value is nil, or
-	  (null function))		;function is nil, then
-      nil				;Do nothing.
+  (if (or (not (boundp hook))           ;unbound symbol, or
+          (null (symbol-value hook))    ;value is nil, or
+          (null function))              ;function is nil, then
+      nil                               ;Do nothing.
     (let ((hook-value (symbol-value hook)))
       (if (consp hook-value)
-	  (setq hook-value (delete function hook-value))
-	(if (equal hook-value function)
-	    (setq hook-value nil)))
+          (setq hook-value (delete function hook-value))
+        (if (equal hook-value function)
+            (setq hook-value nil)))
       (set hook hook-value))))
 
 (fset 'zenicb-remove-hook 'zenicb-delete-hook)
@@ -1021,12 +1021,12 @@ the second argument to be earlier in time than the first argument."
 calls of zenicb-timer-hook is how often a server pings the client."
   (let ((now (zenicb-secs-since-epoch)))
     (if (zenicb-time< 0 (zenicb-time-diff now zenicb-time-last-event))
-	(progn
-	  (and zenicb-debug-timer
+        (progn
+          (and zenicb-debug-timer
                (zenicb-message proc 'debug
                                (concat "Timer: %s" (current-time-string))))
-	  (zenicb-run-hook 'zenicb-timer-hook proc now)
-	  (setq zenicb-time-last-event now)))))
+          (zenicb-run-hook 'zenicb-timer-hook proc now)
+          (setq zenicb-time-last-event now)))))
 
 ;;
 ;; Display the idle time in a nice format.
@@ -1045,9 +1045,9 @@ calls of zenicb-timer-hook is how often a server pings the client."
   (let ((length (length message)))
     (while (> length maxlength)
       (let ((string (substring message 0 maxlength)))
-	(setq message (substring message maxlength))
-	(setq length (- length maxlength))
-	(apply function string args))))
+        (setq message (substring message maxlength))
+        (setq length (- length maxlength))
+        (apply function string args))))
   (apply function message args))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1121,27 +1121,27 @@ calls of zenicb-timer-hook is how often a server pings the client."
      ((string= reply-type "wl") ; who reply
       (zenicb-display-string
        proc (format "[info] %s%-12s%5s  %s  %s@%s %s"
-		    (if (string= (nth 1 parsedmsg) "m") "*" " ")
-		    (nth 2 parsedmsg)
-		    (zenicb-convert-time (nth 3 parsedmsg))
-		    (zenicb-convert-date (nth 5 parsedmsg))
-		    (nth 6 parsedmsg)
-		    (nth 7 parsedmsg)
-		    (nth 8 parsedmsg))))
+                    (if (string= (nth 1 parsedmsg) "m") "*" " ")
+                    (nth 2 parsedmsg)
+                    (zenicb-convert-time (nth 3 parsedmsg))
+                    (zenicb-convert-date (nth 5 parsedmsg))
+                    (nth 6 parsedmsg)
+                    (nth 7 parsedmsg)
+                    (nth 8 parsedmsg))))
      ((string= reply-type "co") ; comment
       (let ((message (nth 1 parsedmsg)))
-	(if message
-	    (let ((message
-		   (if (string-match "\\( +\\)$" message)
-		       (substring message 0 (match-beginning 1))
-		     message)))
-	      (zenicb-display-string proc (format "[info] %s" message)))
-	  (zenicb-display-string proc "[info]"))))
+        (if message
+            (let ((message
+                   (if (string-match "\\( +\\)$" message)
+                       (substring message 0 (match-beginning 1))
+                     message)))
+              (zenicb-display-string proc (format "[info] %s" message)))
+          (zenicb-display-string proc "[info]"))))
      (t
       (zenicb-display-string
        proc (format "[debug] packet type i, subtype %s, data %s"
-		    (prin1-to-string reply-type)
-		    (prin1-to-string parsedmsg)))))))
+                    (prin1-to-string reply-type)
+                    (prin1-to-string parsedmsg)))))))
 (fset 'zenicb-server-h 'zenicb-server-i)
 
 ;;
@@ -1210,7 +1210,7 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;;
 (defun zenicb-command-command-char (proc parsedcmd)
   (if (not (string= "" (cdr parsedcmd)))
-	   (setq zenicb-command-char (string-to-char (cdr parsedcmd)))))
+           (setq zenicb-command-char (string-to-char (cdr parsedcmd)))))
 
 ;;
 ;; Delete a nickname from the server's database.
@@ -1291,8 +1291,8 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;;
 (defun zenicb-command-m (proc parsedcmd)
   (let* ((tmp (zenicb-parse-firstword (cdr parsedcmd)))
-	 (victim (car tmp))
-	 (message (cdr tmp)))
+         (victim (car tmp))
+         (message (cdr tmp)))
     (zenicb-split message 220 'zenicb-send-private proc victim)))
 
 (defun zenicb-send-private (message proc victim)
@@ -1369,10 +1369,10 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;;
 (defun zenicb-command-query (proc parsedcmd)
   (cond ((equal (cdr parsedcmd) "")
-	 (setq zenicb-current-victim nil)
+         (setq zenicb-current-victim nil)
          (zenicb-message proc 'queryoff))
-	(t
-	 (setq zenicb-current-victim (cdr parsedcmd))
+        (t
+         (setq zenicb-current-victim (cdr parsedcmd))
          (zenicb-message proc 'queryon (cdr parsedcmd))))
   (force-mode-line-update))
 
@@ -1392,11 +1392,11 @@ calls of zenicb-timer-hook is how often a server pings the client."
 ;;
 (defun zenicb-command-quit (proc parsedcmd)
   (if (or (and zenicb-verify-quit
-	       (zenicb-confirm-quit))
-	  (not zenicb-verify-quit))
+               (zenicb-confirm-quit))
+          (not zenicb-verify-quit))
       (progn
         (zenicb-message proc 'quit)
-	(delete-process proc))))
+        (delete-process proc))))
 
 (defun zenicb-confirm-quit ()
   (interactive)
@@ -1556,7 +1556,7 @@ calls of zenicb-timer-hook is how often a server pings the client."
       ;; many new message types and the other catalogs
       ;; aren't completely up to date.
       (and (not (string-equal lang 'english))
- 	   (zenicb-lang-retrieve-catalog-entry-1 sym 'english))))
+           (zenicb-lang-retrieve-catalog-entry-1 sym 'english))))
 
 (defun zenicb-lang-retrieve-catalog-entry-1 (sym lang)
   (or lang (setq lang zenicb-lang-current-language))
@@ -1638,8 +1638,8 @@ calls of zenicb-timer-hook is how often a server pings the client."
   (switch-to-buffer "*ZenICB bug*")
   (erase-buffer)
   (insert (concat "To: " zenicb-bug-address "\n"
-		  "Subject: Found a showstopper in ZenICB-" zenicb-version "\n"
-		  mail-header-separator "\n\n"))
+                  "Subject: Found a showstopper in ZenICB-" zenicb-version "\n"
+                  mail-header-separator "\n\n"))
   (insert
    (concat
     "Describe the bug you encountered as good as possible.\n"

@@ -4,7 +4,7 @@
 
 ;; Author: Faried Nawaz <fn@Hungry.COM>
 ;; Based almost entirely on zenirc-history.el by
-;;	Per Persson <pp@gnu.ai.mit.edu>
+;;      Per Persson <pp@gnu.ai.mit.edu>
 ;; Maintainer: <fn-icb@LISP-READER.Hungry.COM>
 ;; Keywords: zenicb, revisionistic history
 ;; Created: 97-03-17 (will this become 100-..-.. in three years?)
@@ -49,9 +49,9 @@
 ;; reset hairy variables when a new command is sent to the server
 (defun zenicb-history-command (command)
   (setq zenicb-history-list-backward nil
-	zenicb-history-list-forward nil
-	zenicb-history-list-current nil
-	zenicb-history-list (cons command zenicb-history-list)))
+        zenicb-history-list-forward nil
+        zenicb-history-list-current nil
+        zenicb-history-list (cons command zenicb-history-list)))
 
 ;; step up one entry in the history list
 (defun zenicb-history-backward ()

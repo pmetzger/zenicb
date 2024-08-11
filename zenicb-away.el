@@ -43,23 +43,23 @@
 
 (defun zenicb-command-away (proc parsedcmd)
   (cond ((string= "" (cdr parsedcmd))
-	 (zenicb-remove-hook 'zenicb-server-c-hook 'zenicb-away)
-	 (zenicb-remove-hook 'zenicb-command-m-hook 'zenicb-away-remind)
-	 (setq zenicb-away-mode nil))
-	(t
-	 (setq zenicb-away-message (cdr parsedcmd))
-	 (setq zenicb-away-mode t)
-	 (zenicb-add-hook 'zenicb-server-c-hook 'zenicb-away)
-	 (zenicb-add-hook 'zenicb-command-m-hook 'zenicb-away-remind)))
+         (zenicb-remove-hook 'zenicb-server-c-hook 'zenicb-away)
+         (zenicb-remove-hook 'zenicb-command-m-hook 'zenicb-away-remind)
+         (setq zenicb-away-mode nil))
+        (t
+         (setq zenicb-away-message (cdr parsedcmd))
+         (setq zenicb-away-mode t)
+         (zenicb-add-hook 'zenicb-server-c-hook 'zenicb-away)
+         (zenicb-add-hook 'zenicb-command-m-hook 'zenicb-away-remind)))
   (force-mode-line-update))
 
 (defun zenicb-away (proc parsedmsg)
   ; prevent a loop
   (if (not (or (string-match "^away: " (nth 1 parsedmsg))
-	       (string= zenicb-nick (nth 0 parsedmsg))))
+               (string= zenicb-nick (nth 0 parsedmsg))))
       (zenicb-send-string proc ?h
-			  (concat "m\C-a" (car parsedmsg)
-				  " " "away: " zenicb-away-message))))
+                          (concat "m\C-a" (car parsedmsg)
+                                  " " "away: " zenicb-away-message))))
 
 (defun zenicb-away-remind (proc parsedmsg)
   ; remind users that they are /msg'ing someone while they're /away.
@@ -67,7 +67,7 @@
 
 (or (assq 'zenicb-away-mode minor-mode-alist)
     (setq minor-mode-alist
-	  (cons (list 'zenicb-away-mode " Away") minor-mode-alist)))
+          (cons (list 'zenicb-away-mode " Away") minor-mode-alist)))
 
 
 (provide 'zenicb-away)

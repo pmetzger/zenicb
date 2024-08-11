@@ -60,17 +60,17 @@
 (defun zenicb-nologout (proc parsedmsg)
   (if (string= (nth 0 parsedmsg) "Drop")
       (progn
-	(zenicb-add-hook 'zenicb-server-c-hook 'zenicb-nologout-hide-spam)
-	(setq zenicb-run-next-hook nil)
-	(zenicb-send-string
-	 proc ?h (concat "m\C-a" zenicb-nick " " zenicb-nologout-string)))))
+        (zenicb-add-hook 'zenicb-server-c-hook 'zenicb-nologout-hide-spam)
+        (setq zenicb-run-next-hook nil)
+        (zenicb-send-string
+         proc ?h (concat "m\C-a" zenicb-nick " " zenicb-nologout-string)))))
 
 (defun zenicb-nologout-hide-spam (proc parsedmsg)
   (if (and (string= (nth 0 parsedmsg) zenicb-nick)
-	   (string= (nth 1 parsedmsg) zenicb-nologout-string))
+           (string= (nth 1 parsedmsg) zenicb-nologout-string))
       (progn
-	(setq zenicb-run-next-hook nil)
-	(zenicb-delete-hook 'zenicb-server-c-hook 'zenicb-nologout-hide-spam))))
+        (setq zenicb-run-next-hook nil)
+        (zenicb-delete-hook 'zenicb-server-c-hook 'zenicb-nologout-hide-spam))))
 
 
 (provide 'zenicb-nologout)

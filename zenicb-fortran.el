@@ -78,13 +78,13 @@
 ;; F77=f77
 ;;
 ;; bot: bot.o sock.o
-;; 	$(F77) bot.o sock.o -o bot
+;;      $(F77) bot.o sock.o -o bot
 ;;
 ;; bot.o: bot.f
-;; 	$(F77) -c bot.f
+;;      $(F77) -c bot.f
 ;;
 ;; sock.o: sock.c
-;; 	$(CC) -c sock.c
+;;      $(CC) -c sock.c
 ;; ---bot.f---cut here---
 ;; CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 ;; C
@@ -211,7 +211,7 @@
 ;; #include <netdb.h>
 ;; #define IRCPORT 6667
 ;;
-;; int sock;		/* socket to connect to server */
+;; int sock;            /* socket to connect to server */
 ;;
 ;; /*
 ;;  * open a socket to the irc server on "hostname"
@@ -219,74 +219,74 @@
 ;;
 ;; int opsock_(char *fhostname, int fhostnamelen)
 ;; {
-;; 	char *hostname;
-;; 	int i;
-;; 	struct sockaddr_in addr;
-;; 	struct hostent *h;
+;;      char *hostname;
+;;      int i;
+;;      struct sockaddr_in addr;
+;;      struct hostent *h;
 ;;
-;; 	if (NULL == (hostname = (char *)malloc(fhostnamelen+1))) {
-;; 		return 1;
-;; 	}
-;; 	strncpy(hostname, fhostname, fhostnamelen+1);
-;; 	for(i=0;i<strlen(hostname);i++) {
-;; 		if (' ' == *(hostname+i)) {
-;; 			*(hostname+i)='\0';
-;; 			break;
-;; 		}
-;; 	}
+;;      if (NULL == (hostname = (char *)malloc(fhostnamelen+1))) {
+;;              return 1;
+;;      }
+;;      strncpy(hostname, fhostname, fhostnamelen+1);
+;;      for(i=0;i<strlen(hostname);i++) {
+;;              if (' ' == *(hostname+i)) {
+;;                      *(hostname+i)='\0';
+;;                      break;
+;;              }
+;;      }
 ;;
-;; 	if (NULL == (h = gethostbyname(hostname))) {
-;; 		return 1;
-;; 	}
-;; 	addr.sin_family = AF_INET;
-;; 	addr.sin_port = IRCPORT;
-;; 	bcopy(h->h_addr, (char *)&addr.sin_addr, h->h_length);
-;; 	bzero((char *)addr.sin_zero, sizeof(addr.sin_zero));
+;;      if (NULL == (h = gethostbyname(hostname))) {
+;;              return 1;
+;;      }
+;;      addr.sin_family = AF_INET;
+;;      addr.sin_port = IRCPORT;
+;;      bcopy(h->h_addr, (char *)&addr.sin_addr, h->h_length);
+;;      bzero((char *)addr.sin_zero, sizeof(addr.sin_zero));
 ;;
-;; 	if ( 0 > (sock = socket(AF_INET, SOCK_STREAM, 0))) {
-;; 		return 1;
-;; 	}
+;;      if ( 0 > (sock = socket(AF_INET, SOCK_STREAM, 0))) {
+;;              return 1;
+;;      }
 ;;
-;; 	if ( 0 > connect(sock, &addr, sizeof(addr))) {
-;; 		return 1;
-;; 	}
+;;      if ( 0 > connect(sock, &addr, sizeof(addr))) {
+;;              return 1;
+;;      }
 ;;
-;; 	return(0);
+;;      return(0);
 ;; }
 ;;
 ;; int clsock_(void)
 ;; {
-;; 	close(sock);
+;;      close(sock);
 ;; }
 ;;
 ;; int rdsock_(char *buf, int buflen)
 ;; {
-;; 	int i;
+;;      int i;
 ;;
-;; 	for (i=0; i<513; i++) {
-;; 		if (1 != read(sock,buf+i,1)) {
-;; 			return 1;
-;; 		}
-;; 		if ('\n' == *(buf+i)) {
-;; 			return 0;
-;; 		}
-;; 	}
-;; 	return 0;
+;;      for (i=0; i<513; i++) {
+;;              if (1 != read(sock,buf+i,1)) {
+;;                      return 1;
+;;              }
+;;              if ('\n' == *(buf+i)) {
+;;                      return 0;
+;;              }
+;;      }
+;;      return 0;
 ;; }
 ;;
 ;; int wrsock_(char *buf, int buflen)
 ;; {
-;; 	int i;
+;;      int i;
 ;;
-;; 	for (i=0; i<buflen; i++) {
-;; 		if (1 != write(sock, buf+i, 1)) {
-;; 			return 1;
-;; 		}
-;; 	}
-;; 	if (1 != write(sock, "\n", 1)) {
-;; 		return 1;
-;; 	}
-;; 	return 0;
+;;      for (i=0; i<buflen; i++) {
+;;              if (1 != write(sock, buf+i, 1)) {
+;;                      return 1;
+;;              }
+;;      }
+;;      if (1 != write(sock, "\n", 1)) {
+;;              return 1;
+;;      }
+;;      return 0;
 ;; }
 ;;
 ;; ---end of file---

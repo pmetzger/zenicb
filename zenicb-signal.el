@@ -59,7 +59,7 @@
   (let ((proc-window (get-buffer-window (process-buffer proc))))
     (cond
      ((and proc-window
-	   (pos-visible-in-window-p zenicb-process-mark proc-window)))
+           (pos-visible-in-window-p zenicb-process-mark proc-window)))
      ((message "[zenicb] %s wants to annoy you." (nth 0 parsedmsg))))))
 
 ;;; End of zenicb-signal.el

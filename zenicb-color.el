@@ -143,16 +143,16 @@ variable of the same name."
             (string= "" color))
         (zenicb-message proc 'color-lame-args "/color")
       (if (zenicb-color-name-p color)
-	  (let ((newface (make-symbol
-			  (concat "zenicb-color-face-"
-				  (number-to-string zenicb-facename-index)))))
-	    (setq zenicb-facename-index (1+ zenicb-facename-index))
-	    (copy-face 'default newface)
-	    (set-face-foreground newface color)
-	    (setq zenicb-color-alist
-		  (cons (list victim newface)
-			zenicb-color-alist)))
-	(zenicb-message proc 'color-nonexistant color)))))
+          (let ((newface (make-symbol
+                          (concat "zenicb-color-face-"
+                                  (number-to-string zenicb-facename-index)))))
+            (setq zenicb-facename-index (1+ zenicb-facename-index))
+            (copy-face 'default newface)
+            (set-face-foreground newface color)
+            (setq zenicb-color-alist
+                  (cons (list victim newface)
+                        zenicb-color-alist)))
+        (zenicb-message proc 'color-nonexistant color)))))
 
 (defvar zenicb-command-uncolor-hook '(zenicb-command-uncolor))
 
