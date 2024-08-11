@@ -158,7 +158,6 @@ This function can be used to make proxy connections.")
 (defvar zenicb-debug-mainloop nil)
 (defvar zenicb-debug-commands nil)
 (defvar zenicb-debug-timer nil)
-(defvar zenicb-bug-address "fn-zenicb@hungry.com")
 
 ;; Don't change this unless you know what to do.
 (defconst zenicb-message-length-limit 252
@@ -1630,22 +1629,6 @@ calls of zenicb-timer-hook is how often a server pings the client."
 
 
 ;;; misc code
-
-;; Code to send a bug report.
-(defun zenicb-bug ()
-  "Send a bug report to the ZenICB maintainers."
-  (interactive)
-  (require 'sendmail)
-  (switch-to-buffer "*ZenICB bug*")
-  (erase-buffer)
-  (insert (concat "To: " zenicb-bug-address "\n"
-                  "Subject: Found a showstopper in ZenICB-" zenicb-version "\n"
-                  mail-header-separator "\n\n"))
-  (insert
-   (concat
-    "Describe the bug you encountered as good as possible.\n"
-    "When you're ready hit C-cC-c to send away the bug report.\n\n"))
-  (mail-mode))
 
 ;; for-each -- from Noah Friedman.
 (defun for-each (fn &rest lists)
